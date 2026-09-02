@@ -1,0 +1,23 @@
+# Raspberry Pi OS 64-bit / Python 3.10+용 LiteRT interpreter.
+ai-edge-litert>=2.1,<2.2
+numpy>=1.24,<2
+scipy>=1.8.0
+pandas>=1.5,<3
+matplotlib>=3.7
+Pillow>=9
+joblib>=1.3
+scikit-learn>=1.3
+spidev>=3.6
+smbus2>=0.4.3
+
+# 활성 mmWave 경로(M-PROT-B23)는 PyTorch float32 state_dict 를 그대로 로드한다.
+# ai/mmwave_prototype/mmwave_m_prot_2_b23_runtime.py 가 최상위에서 torch 를 import 하고,
+# 이 모듈은 backend/app.py -> backend/runtime.py -> ai/pipeline.py 체인에 포함되므로
+# torch 가 없으면 backend 기동 자체가 실패한다.
+#
+# 일반 PyPI 의 ARM64 torch 는 CUDA/NVIDIA 의존성을 함께 끌어온다(Pi 에는 CUDA 없음).
+# 반드시 공식 CPU wheel index 를 함께 사용한다. Raspberry Pi 5 / aarch64 에서
+# torch 2.13.0+cpu 로 import·모델 load·backend 기동이 확인되었다. 해당 실행 기록은
+# 소유자가 보유하며 제출 저장소에는 포함하지 않는다.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch>=2.1.0

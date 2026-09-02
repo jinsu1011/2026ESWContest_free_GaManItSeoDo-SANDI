@@ -1,0 +1,37 @@
+{
+  "artifacts": [
+    {
+      "candidate_id": "FLOAT_KERAS",
+      "eligible": true,
+      "logical_path": "T-B1/checkpoints/P1_TRAIN_FITTED_GLOBAL_ZSCORE.weights.h5",
+      "sha256": "7aba32fe8d0e241546429bdc3e8cd059b10d4d8f548e9e12c4085abeba308a75",
+      "size_bytes": 3777416
+    },
+    {
+      "candidate_id": "TFLITE_FP32",
+      "eligible": true,
+      "logical_path": "T-B4/artifacts/SMALL_CNN_BASELINE_V1_P1_float32.tflite",
+      "sha256": "fbe891520f07e0534b1a7074dc819d8ed44bca58b27e35c78916c3ddae73a779",
+      "size_bytes": 1252048
+    },
+    {
+      "candidate_id": "FULL_INT8",
+      "eligible": true,
+      "logical_path": "T-B4/artifacts/SMALL_CNN_BASELINE_V1_P1_full_int8.tflite",
+      "sha256": "fa9730c29535477a3994c11e664474a0ca0116afaaa172889f47446ab2ac46be",
+      "size_bytes": 318280
+    },
+    {
+      "candidate_id": "TFLITE_DYNAMIC_RANGE",
+      "diagnostic_only": true,
+      "eligible": false,
+      "logical_path": "T-B4/artifacts/SMALL_CNN_BASELINE_V1_P1_dynamic_range.tflite",
+      "sha256": "297de231e26ecf2d4cd4010bd10c08d4df3b6b0a531c69693daea353afb8127d",
+      "size_bytes": 317344
+    }
+  ],
+  "binaries_tracked_in_git": false,
+  "binary_storage": "EXTERNAL_SSD_ONLY",
+  "phase": "T-B5",
+  "schema_version": "1.0"
+}

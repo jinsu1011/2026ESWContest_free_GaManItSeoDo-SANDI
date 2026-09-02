@@ -1,0 +1,13 @@
+{
+  "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+  "labels": {
+    "0": "VACANT",
+    "1": "OCCUPIED"
+  },
+  "manifest_version": "1.0",
+  "phase": "C-B6",
+  "positive_class": "OCCUPIED",
+  "risk_semantic": "NONE",
+  "safety_semantic": "NONE",
+  "semantic": "ROOM_OCCUPANCY"
+}

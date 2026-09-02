@@ -1,0 +1,27 @@
+{
+  "architecture": "LINEAR_LOGISTIC",
+  "b5_threshold_inherited": false,
+  "c_c2_started": false,
+  "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+  "feature_order": [
+    "CO2",
+    "CO2_slope"
+  ],
+  "float_tflite_path": "models/co2/candidates/c_b6/float_reference.tflite",
+  "float_tflite_sha256": "fc1d4150a818473758f1f2a7c3a5f3afe604cf7c59171524f21dac3a22c3a87c",
+  "historical_b5_modified": false,
+  "int8_tflite_path": "models/co2/candidates/c_b6/full_integer_int8.tflite",
+  "int8_tflite_sha256": "c5969b367f5b5e28c4d27f1bdd6220f7d02da92e99604e3f85c9f1291e98dd3b",
+  "locked_test_predictive_access": false,
+  "manifest_version": "1.0",
+  "phase": "C-B6",
+  "physical_acquisition_started": false,
+  "reference_model_fingerprint": "ceea97df33b7fa799012cc4ac5baf2a4e7d7cf063b4dbf9726ce6c04737ddd0c",
+  "reference_model_path": "models/co2/candidates/c_b6/float_reference_parameters.json",
+  "scaler_fingerprint": "a92123ad37e9b284929ba0fe53179126345d54d487ec4b3a73c910d00490a462",
+  "scaler_path": "datasets/co2/manifests/c_b6_reduced_feature_candidate/scaler_metadata.json",
+  "slope_profile": "CO2_SLOPE_FEATURE_PROFILE_001",
+  "status": "C_B6_PASS_WITH_LIMITATIONS",
+  "threshold": 0.43,
+  "threshold_source": "TRAIN_INTERNAL_ONLY"
+}

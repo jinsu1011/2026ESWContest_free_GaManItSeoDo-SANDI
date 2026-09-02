@@ -1,0 +1,15 @@
+# Thermal contract manifests and the runtime adapters that read them are
+# checksum-sensitive; the SHA256 values in models/model_manifest.json are
+# validated at every Raspberry Pi start, so these must stay LF on all hosts.
+RaspberryPi/Ondevice_AI/models/** text eol=lf
+RaspberryPi/Ondevice_AI/models/**/*.tflite binary
+RaspberryPi/Ondevice_AI/models/**/*.pt binary
+RaspberryPi/Ondevice_AI/inference/*.py text eol=lf
+
+# Web and LCD assets are served byte-for-byte by the FastAPI backend.
+RaspberryPi/Web/** text eol=lf
+RaspberryPi/LCD/static/** text eol=lf
+
+# Vendored third-party distributions stay byte-identical to the official
+# release so the recorded SHA-256 keeps verifying.
+RaspberryPi/Web/vendor/** -text

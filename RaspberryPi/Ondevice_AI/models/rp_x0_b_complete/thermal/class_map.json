@@ -1,0 +1,9 @@
+{
+  "0": "NOT_HUMAN",
+  "1": "HUMAN_NORMAL",
+  "2": "HUMAN_FALL",
+  "architecture": "SMALL_CNN_BASELINE_V1",
+  "candidate_id": "FULL_INT8",
+  "phase": "T-B5",
+  "semantic_restriction": "HUMAN_FALL is a LYING-derived posture compatibility proxy. It is NOT a verified temporal FALL_EVENT."
+}

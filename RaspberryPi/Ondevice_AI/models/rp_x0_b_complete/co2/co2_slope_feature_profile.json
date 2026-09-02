@@ -1,0 +1,61 @@
+{
+  "manifest_version": "1.0",
+  "profile_id": "CO2_SLOPE_FEATURE_PROFILE_001",
+  "feature_name": "CO2_slope",
+  "feature_unit": "ppm/min",
+  "slope_method": "ENDPOINT_DIFFERENCE",
+  "formula": "(co2_now - co2_history_start) / (elapsed_source_clock_seconds / 60.0)",
+  "formula_description": "Endpoint difference over the earliest same-block past observation whose source-clock age is at least history_duration_seconds; elapsed time uses actual SOURCE_ACQUISITION_CLOCK deltas (not a fixed 60.0s assumption).",
+  "causality": "PAST_ONLY",
+  "timestamp_basis": "SOURCE_ACQUISITION_CLOCK",
+  "source_timezone": "UNVERIFIED",
+  "utc_conversion_claimed": false,
+  "history_duration_seconds": 150.0,
+  "history_duration_minutes": 2.5,
+  "minimum_source_samples": 2,
+  "minimum_elapsed_seconds": 150.0,
+  "nominal_source_cadence_seconds": 60.0,
+  "nominal_history_sample_span_at_source_cadence": 3,
+  "offline_baseline_status": "CANONICAL_OFFLINE_BASELINE_DESIGN",
+  "offline_baseline_equivalence_claims": {
+    "verified_historical_training_contract": false,
+    "active_runtime_equivalent": false
+  },
+  "runtime_evidence": {
+    "evidence_path": "sensors/co2/co2_adapter.py",
+    "runtime_slope_method_verified": "ENDPOINT_DIFFERENCE",
+    "runtime_history_maxlen": 30,
+    "runtime_required_history_sec": 5.0,
+    "configured_window_seconds": 150.0,
+    "configured_window_seconds_applied_to_slope_logic": false,
+    "nominal_full_buffer_endpoint_span_seconds": 145.0,
+    "nominal_full_buffer_span_notes": "At sample_rate_hz=0.2, a full maxlen=30 deque spans approximately 29 intervals x 5s = 145s from oldest retained to current, not a guaranteed fixed 150s window. Active read() eligibility uses required_history_sec=5.0; window_seconds is configured but not applied to slope eligibility or endpoint selection."
+  },
+  "offline_canonical_history_threshold_seconds": 150.0,
+  "offline_effective_endpoint_span_due_to_source_cadence": {
+    "typical_seconds_range": [
+      179.0,
+      181.0
+    ],
+    "explanation": "UCI nominal cadence is ~60s. Under the past-sample-only rule that selects the earliest same-block observation with age >= 150s, the selected endpoint is normally three intervals back (~179-181s)."
+  },
+  "historical_training_history_contract_status": "CO2_SLOPE_HISTORY_LINEAGE_UNVERIFIED",
+  "offline_baseline_derivation": "150s is retained as a CANONICAL_OFFLINE_BASELINE_DESIGN derived from the configured/intended adapter window_seconds value. It is NOT verified as the historical training feature duration and is NOT active-runtime equivalent. Endpoint-difference method is the verified runtime method; history-length ablation remains C-B1; SCD40 domain alignment remains C-C.",
+  "boundary_policy": "DERIVED_TEMPORAL_FEATURES_MUST_NOT_CROSS_BLOCK_BOUNDARIES",
+  "gap_policy": "RESTART_HISTORY_AFTER_FORBIDDEN_GAP",
+  "max_internal_gap_seconds": 90.0,
+  "warm_up_policy": "PRESERVE_ROW_WITH_NULL_SLOPE",
+  "warm_up_status": "FEATURE_UNAVAILABLE_WARMUP",
+  "gap_restart_status": "FEATURE_UNAVAILABLE_GAP_RESTART",
+  "nonfinite_policy": "FAIL_CLOSED_STATUS_NO_CANONICAL_SLOPE",
+  "output_type": "float64_or_null",
+  "calculation_precision": "float64",
+  "comparison_abs_tolerance": 1e-12,
+  "interpolation_allowed": false,
+  "future_samples_allowed": false,
+  "centered_window_allowed": false,
+  "scaler_fitting_in_phase": false,
+  "model_training_in_phase": false,
+  "occupancy_label_used_for_contract_selection": false,
+  "locked_test_used_for_contract_selection": false
+}

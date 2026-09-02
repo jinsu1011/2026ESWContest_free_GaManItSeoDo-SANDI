@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#071018">
+  <meta name="description" content="SafeNest 밀폐공간 실시간 안전 관제 대시보드">
+  <title>SafeNest · 실시간 안전 관제</title>
+  <link rel="stylesheet" href="/dashboard/assets/styles.css">
+</head>
+<body data-level="UNKNOWN">
+  <a class="skip-link" href="#main">본문으로 이동</a>
+  <header class="site-header">
+    <div class="brand-lockup">
+      <span class="brand-signal" aria-hidden="true"><i></i><i></i><i></i></span>
+      <div>
+        <strong>SafeNest</strong>
+        <span>밀폐공간 안전 관제</span>
+      </div>
+    </div>
+    <div class="header-status">
+      <span class="connection-badge" id="connectionBadge" data-state="connecting">
+        <i aria-hidden="true"></i><span>연결 중</span>
+      </span>
+      <time id="currentTime" datetime="">--:--:--</time>
+    </div>
+  </header>
+
+  <div class="offline-banner" id="offlineBanner" hidden role="alert">
+    <strong>⚠ 센서 연결 상태 확인 필요</strong>
+    <span id="offlineMessage">현재 센서 데이터를 수신하지 못하고 있습니다. 마지막 값은 최신값이 아닐 수 있습니다.</span>
+  </div>
+
+  <main id="main">
+    <section class="overview" aria-labelledby="overviewTitle">
+      <div class="risk-hero panel" id="riskHero">
+        <div class="eyebrow-row">
+          <p class="eyebrow" id="overviewTitle">CURRENT RISK</p>
+          <span class="health-badge" id="healthBadge" data-health="FAILED">FAILED</span>
+        </div>
+        <div class="risk-layout">
+          <div>
+            <p class="risk-kicker" id="riskKicker">데이터 수신 대기</p>
+            <h1 id="riskLevel">NO DATA</h1>
+            <p class="risk-summary" id="riskSummary">센서 gateway가 첫 상태를 게시하면 자동으로 갱신됩니다.</p>
+          </div>
+          <div class="score-gauge" id="scoreGauge" role="img" aria-label="위험 점수 없음">
+            <div><strong id="riskScore">—</strong><span>/ 100</span></div>
+          </div>
+        </div>
+        <dl class="system-facts">
+          <div><dt>Gateway</dt><dd id="gatewayState">OFFLINE</dd></div>
+          <div><dt>상태 Revision</dt><dd id="stateRevision">—</dd></div>
+          <div><dt>최근 갱신</dt><dd id="lastUpdate">—</dd></div>
+        </dl>
+      </div>
+
+      <aside class="alert-panel panel" aria-labelledby="alertTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">ALERT CONTEXT</p><h2 id="alertTitle">판단 근거</h2></div>
+          <span class="reason-count" id="reasonCount">0</span>
+        </div>
+        <ul class="reason-list" id="reasonList">
+          <li class="empty-state">현재 수집된 판단 근거가 없습니다.</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section class="sensor-section" aria-labelledby="sensorTitle">
+      <div class="section-heading">
+        <div><p class="eyebrow">LIVE SENSOR MATRIX</p><h2 id="sensorTitle">센서 상태</h2></div>
+        <p>마지막 값과 현재 유효성을 분리해 표시합니다.</p>
+      </div>
+      <div class="sensor-grid">
+        <article class="sensor-card" id="mmwaveCard">
+          <header><div><span class="sensor-code">S1</span><h3>mmWave</h3></div><span class="status-chip" id="mmwaveStatus">NO DATA</span></header>
+          <div class="metric-pair">
+            <div><span>호흡수</span><strong id="respirationValue">—</strong><small>rpm</small></div>
+            <div><span>심박수</span><strong id="heartValue">—</strong><small>bpm · 표시 전용</small></div>
+          </div>
+          <dl class="sensor-details">
+            <div><dt>재실</dt><dd id="presenceValue">미제공</dd></div>
+            <div><dt>AI</dt><dd id="mmwaveAi">INPUT UNAVAILABLE</dd></div>
+            <div><dt>Risk component</dt><dd id="mmwaveRisk">—</dd></div>
+          </dl>
+        </article>
+
+        <article class="sensor-card thermal-card" id="thermalCard">
+          <header><div><span class="sensor-code">S4</span><h3>Thermal-44</h3></div><span class="status-chip" id="thermalStatus">NO DATA</span></header>
+          <div class="thermal-layout">
+            <div class="heatmap-shell">
+              <canvas id="thermalCanvas" width="400" height="256" role="img" aria-label="Thermal frame 수신 대기"></canvas>
+              <span class="heatmap-note" id="heatmapNote">FRAME UNAVAILABLE</span>
+            </div>
+            <dl class="thermal-facts">
+              <div><dt>AI 분류</dt><dd id="thermalAi">—</dd></div>
+              <div><dt>Human 확률</dt><dd id="humanProbability">—</dd></div>
+              <div><dt>Raw 범위</dt><dd id="thermalRawRange">—</dd></div>
+              <div><dt>온도 보정</dt><dd>미적용</dd></div>
+              <div><dt>Risk component</dt><dd id="thermalRisk">—</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="sensor-card" id="co2Card">
+          <header><div><span class="sensor-code">S2</span><h3>CO₂ · MH-Z19B</h3></div><span class="status-chip" id="co2Status">NO DATA</span></header>
+          <div class="primary-metric"><strong id="co2Value">—</strong><span>ppm</span></div>
+          <div class="range-track" aria-hidden="true"><i id="co2Track"></i><b class="mark mark-warn"></b><b class="mark mark-danger"></b></div>
+          <div class="range-labels"><span>500</span><span>주의 1,000</span><span>위험 2,500</span></div>
+          <dl class="sensor-details">
+            <div><dt>환경 상태</dt><dd id="co2State">—</dd></div>
+            <div><dt>Risk component</dt><dd id="co2Risk">—</dd></div>
+          </dl>
+        </article>
+
+        <article class="sensor-card" id="pirCard">
+          <header><div><span class="sensor-code">S3</span><h3>PIR Motion</h3></div><span class="status-chip" id="pirStatus">NO DATA</span></header>
+          <div class="motion-visual" id="motionVisual" data-motion="unknown">
+            <span aria-hidden="true"></span><strong id="motionValue">확인 불가</strong>
+          </div>
+          <dl class="sensor-details">
+            <div><dt>Rule 상태</dt><dd id="pirRule">—</dd></div>
+            <div><dt>무움직임</dt><dd id="noMotionTime">—</dd></div>
+            <div><dt>Risk component</dt><dd id="pirRisk">—</dd></div>
+          </dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="analytics-grid">
+      <article class="panel trend-panel" aria-labelledby="trendTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">RECENT HISTORY</p><h2 id="trendTitle">위험도 · CO₂ 추이</h2></div>
+          <span class="chart-legend"><i></i>Risk <i></i>CO₂</span>
+        </div>
+        <div class="chart-shell">
+          <canvas id="trendCanvas" width="960" height="300" role="img" aria-label="최근 기록 없음"></canvas>
+          <p class="chart-empty" id="trendEmpty">기록이 쌓이면 최근 추이가 표시됩니다.</p>
+        </div>
+      </article>
+
+      <article class="panel event-panel" aria-labelledby="eventTitle">
+        <div class="section-heading compact">
+          <div><p class="eyebrow">EVENT STREAM</p><h2 id="eventTitle">최근 이벤트</h2></div>
+          <span class="storage-badge" id="storageBadge">MEMORY</span>
+        </div>
+        <ol class="event-list" id="eventList">
+          <li class="empty-state">기록된 이벤트가 없습니다.</li>
+        </ol>
+      </article>
+    </section>
+  </main>
+
+  <section class="emergency-overlay" id="emergencyOverlay" hidden aria-labelledby="emergencyTitle" aria-modal="true" role="dialog">
+    <div class="emergency-shell">
+      <div class="emergency-heading">
+        <div>
+          <p class="emergency-eyebrow">🚨 EMERGENCY RESPONSE HMI</p>
+          <h2 id="emergencyTitle">긴급 상황 감지</h2>
+          <p class="emergency-disclaimer">위험 판정이 해제될 때까지 이 화면에서 대응 절차를 진행하십시오.</p>
+        </div>
+        <span class="emergency-pill" id="emergencyPill">DANGER</span>
+      </div>
+
+      <div class="emergency-summary">
+        <div class="emergency-level-block">
+          <span>현재 위험 단계</span>
+          <strong id="emergencyRiskLevel">DANGER</strong>
+          <small id="emergencyEnteredAt">진입 시각 —</small>
+        </div>
+        <div class="emergency-score-block">
+          <span>위험 점수</span>
+          <strong><span id="emergencyRiskScore">—</span><small>/ 100</small></strong>
+        </div>
+        <div class="emergency-alarm-block">
+          <span>경보 상태</span>
+          <strong id="emergencyAlarmState">부저 확인 필요</strong>
+          <small id="emergencyBuzzerMode">부저 상태 —</small>
+        </div>
+      </div>
+
+      <div class="emergency-context-grid">
+        <section class="emergency-card" aria-labelledby="criticalValuesTitle">
+          <h3 id="criticalValuesTitle">핵심 센서 값</h3>
+          <dl class="critical-values">
+            <div><dt>호흡수</dt><dd id="emergencyRespiration">—</dd></div>
+            <div><dt>CO₂</dt><dd id="emergencyCo2">—</dd></div>
+            <div><dt>무움직임</dt><dd id="emergencyNoMotion">—</dd></div>
+            <div><dt>Thermal 상태</dt><dd id="emergencyThermal">—</dd></div>
+          </dl>
+        </section>
+        <section class="emergency-card" aria-labelledby="emergencyReasonsTitle">
+          <h3 id="emergencyReasonsTitle">감지 원인</h3>
+          <ul class="emergency-reasons" id="emergencyReasonList">
+            <li>현재 위험 원인을 확인하는 중입니다.</li>
+          </ul>
+        </section>
+      </div>
+
+      <p class="emergency-offline-note" id="emergencyOfflineNote" hidden>
+        ⚠ 센서 또는 Gateway 연결이 끊겼습니다. 이것은 정상 복구가 아니며, 실제 WARNING/NORMAL 판정이 수신될 때까지 위험 경보를 유지합니다.
+      </p>
+
+      <div class="emergency-actions" aria-label="긴급 대응 조작">
+        <button class="emergency-button report" id="report119Button" type="button">🚨 119 신고 시뮬레이션</button>
+        <button class="emergency-button contact" id="contactManagerButton" type="button">📱 담당자 연락</button>
+        <button class="emergency-button acknowledge" id="acknowledgeButton" type="button">✓ 경고 확인</button>
+        <button class="emergency-button voice" id="voiceToggleButton" type="button" aria-pressed="false">🔊 음성 ON</button>
+      </div>
+
+      <div class="emergency-action-status" id="emergencyActionStatus" role="status" aria-live="polite">
+        <span id="simulationStatus">119 신고는 실제 긴급 서비스와 연결되지 않습니다.</span>
+        <span id="smsStatus"></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="simulation-modal" id="simulationModal" hidden aria-labelledby="simulationTitle" aria-modal="true" role="dialog">
+    <div class="simulation-card">
+      <p class="emergency-eyebrow">COMPETITION DEMO ONLY</p>
+      <h2 id="simulationTitle">119 긴급 신고 시뮬레이션</h2>
+      <p>119 긴급 신고 시뮬레이션을 진행하시겠습니까?</p>
+      <strong class="simulation-disclaimer">경진대회 시연용 모의 신고입니다.</strong>
+      <div class="simulation-countdown" id="simulationCountdown" aria-live="assertive">준비</div>
+      <div class="simulation-actions">
+        <button class="touch-button primary" id="confirmSimulationButton" type="button">시뮬레이션 진행</button>
+        <button class="touch-button secondary" id="cancelSimulationButton" type="button">취소</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>SafeNest Integrated Gateway</span>
+    <span>Thermal °C는 calibration 전까지 표시하지 않습니다.</span>
+  </footer>
+  <div class="sr-only" id="liveAnnouncement" aria-live="polite"></div>
+  <script src="/dashboard/assets/app.js" defer></script>
+</body>
+</html>

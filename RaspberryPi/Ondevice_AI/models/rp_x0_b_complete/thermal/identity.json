@@ -1,0 +1,24 @@
+{
+  "policy_amendment_id": "20260817_LOCKED_B_BINARIES_GIT_TRACKING_01",
+  "selected_candidate_id": "FULL_INT8",
+  "architecture": "SMALL_CNN_BASELINE_V1",
+  "preprocessing": "P1_TRAIN_FITTED_GLOBAL_ZSCORE",
+  "offline_lock_phase": "T-B5",
+  "thermal44_deployment_validated": false,
+  "production_manifest_unchanged": true,
+  "do_not_substitute": "models/thermal/thermal_fall_int8_v0.1.0.tflite",
+  "files": {
+    "FULL_INT8": {
+      "path": "models/thermal/candidates/t_b5/SMALL_CNN_BASELINE_V1_P1_full_int8.tflite",
+      "sha256": "fa9730c29535477a3994c11e664474a0ca0116afaaa172889f47446ab2ac46be",
+      "size_bytes": 318280,
+      "role": "selected_offline_candidate"
+    },
+    "TFLITE_FP32": {
+      "path": "models/thermal/candidates/t_b5/SMALL_CNN_BASELINE_V1_P1_float32.tflite",
+      "sha256": "fbe891520f07e0534b1a7074dc819d8ed44bca58b27e35c78916c3ddae73a779",
+      "size_bytes": 1252048,
+      "role": "true_float32_reference"
+    }
+  }
+}

@@ -1,0 +1,64 @@
+# macOS and editors
+.DS_Store
+**/.DS_Store
+.idea/
+.vscode/
+
+# Python
+**/__pycache__/
+*.py[cod]
+**/.venv/
+.venv/
+.pytest_cache/
+
+# PlatformIO / Arduino build output
+**/.pio/
+**/.cache/
+**/build/
+
+# ---------------------------------------------------------------------------
+# Secrets. Only the *.example templates are committed.
+# ESP32 credentials belong in the sketch-local secrets.h, which is never tracked.
+# ---------------------------------------------------------------------------
+**/secrets.h
+**/wifi_secrets.h
+ESP32/Arduino/**/secrets.h
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials.json
+
+# ---------------------------------------------------------------------------
+# Runtime output. The SafeNest service writes these on the Pi; they are state,
+# not source. Directory placeholders (.gitkeep) stay tracked.
+# ---------------------------------------------------------------------------
+RaspberryPi/Runtime/data/*.db
+RaspberryPi/Runtime/data/*.db-wal
+RaspberryPi/Runtime/data/*.db-shm
+RaspberryPi/Runtime/data/mmwave/*
+RaspberryPi/Runtime/data/co2/*
+RaspberryPi/Runtime/data/thermal/*
+RaspberryPi/Runtime/data/tts/*
+!RaspberryPi/Runtime/data/**/.gitkeep
+*.sqlite
+*.sqlite3
+*.pid
+*.log
+
+# LCD kiosk local state
+RaspberryPi/LCD/state.json
+RaspberryPi/LCD/logs/
+RaspberryPi/LCD/.chromium-kiosk/
+
+# Node
+node_modules/
+.pnpm-store/
+npm-debug.log*
+
+# Rendered/intermediate documents
+tmp/
+
+# 전달용 압축 아카이브
+*.zip

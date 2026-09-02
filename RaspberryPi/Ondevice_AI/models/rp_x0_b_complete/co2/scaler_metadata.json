@@ -1,0 +1,32 @@
+{
+  "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+  "feature_order": [
+    "CO2",
+    "CO2_slope"
+  ],
+  "fingerprint": "a92123ad37e9b284929ba0fe53179126345d54d487ec4b3a73c910d00490a462",
+  "fit_population": "ORIGINAL_NATURALLY_DISTRIBUTED_TRAIN_ONLY",
+  "fit_population_fingerprint": "492ca1f67e44b4a2018b743ec0fc3d20b418f7823d5f2643d8c90b0d39de8fab",
+  "fit_sample_count": 8140,
+  "implementation": "sklearn.preprocessing.StandardScaler",
+  "locked_test_fit_rows": 0,
+  "manifest_version": "1.0",
+  "mean": [
+    606.5058118345612,
+    0.011527303414630624
+  ],
+  "n_samples_seen": 8140,
+  "numeric_policy": "float64_fit_and_transform; float32_tflite_transfer",
+  "oversampled_fit_rows": 0,
+  "phase": "C-B6",
+  "scale": [
+    314.3524240597083,
+    5.661675596121919
+  ],
+  "scaler_profile_id": "CO2_C_B6_TRAIN_ONLY_STANDARD_SCALER_001",
+  "validation_fit_rows": 0,
+  "variance": [
+    98817.44651221468,
+    32.054570555722485
+  ]
+}

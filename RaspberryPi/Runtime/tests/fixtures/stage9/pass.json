@@ -1,0 +1,457 @@
+{
+  "health_before": {
+    "ok": true,
+    "ready": true,
+    "publication_revision": 4,
+    "receiver": {
+      "connections": 1,
+      "disconnects": 0,
+      "port": 9000,
+      "sensor_logging": {
+        "enabled": true,
+        "dropped": {
+          "co2": 0,
+          "thermal": 0,
+          "mmwave": 0,
+          "pir": 0
+        }
+      }
+    }
+  },
+  "health_after": {
+    "ok": true,
+    "ready": true,
+    "publication_revision": 4,
+    "receiver": {
+      "connections": 1,
+      "disconnects": 0,
+      "port": 9000,
+      "sensor_logging": {
+        "enabled": true,
+        "dropped": {
+          "co2": 0,
+          "thermal": 0,
+          "mmwave": 0,
+          "pir": 0
+        }
+      }
+    }
+  },
+  "health_error_before": null,
+  "health_error_after": null,
+  "status_before": {
+    "schema": "safenest.api.status.v1",
+    "timestamp": 4.0,
+    "revision": 4,
+    "publication_revision": 4,
+    "system": "ONLINE",
+    "system_health": "HEALTHY",
+    "device_health": null,
+    "risk": {
+      "system_health": "HEALTHY",
+      "components": {}
+    },
+    "emergency": {
+      "active": false,
+      "transition_id": null,
+      "entered_at": null,
+      "acknowledged": false,
+      "acknowledged_at": null,
+      "buzzer_active": false,
+      "latched_while_offline": false,
+      "buzzer": {
+        "mode": "unconfigured",
+        "available": false,
+        "simulated": true,
+        "active": false
+      }
+    },
+    "offline": false,
+    "ready": true,
+    "runtime_status": {
+      "status": "READY_WITH_LIMITATIONS",
+      "sensors": {
+        "co2": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT",
+          "input_contract_status": "SATISFIED",
+          "ai_status": "ACTIVE",
+          "blocked_reason": null,
+          "output_status": "AVAILABLE"
+        },
+        "thermal": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT",
+          "input_contract_status": "VALIDATED_WITH_LIMITATIONS",
+          "ai_status": "BLOCKED",
+          "blocked_reason": "INT8_QUANTIZATION_REVIEW_REQUIRED",
+          "output_status": "NOT_REQUESTED"
+        },
+        "mmwave": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT_HISTORICAL_ONLY",
+          "input_contract_status": "SIGNAL_CONTRACT_MISMATCH",
+          "ai_status": "MODEL_PENDING",
+          "blocked_reason": "MR60_NATIVE_MODEL_PENDING",
+          "output_status": "NOT_AVAILABLE"
+        },
+        "pir": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "NOT_APPLICABLE",
+          "input_contract_status": "NOT_APPLICABLE",
+          "ai_status": "NOT_APPLICABLE",
+          "blocked_reason": null,
+          "output_status": "NOT_APPLICABLE",
+          "sensor_value_status": "NO_MOTION"
+        }
+      },
+      "limitations": [
+        "thermal",
+        "mmwave"
+      ]
+    },
+    "mmwave": {
+      "state": {
+        "sensor_id": "mmwave",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 4,
+        "last_received_at": 4.0,
+        "last_valid_at": 4.0,
+        "values": {
+          "respiration_rate_bpm": 15.0,
+          "presence_available": false
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT_HISTORICAL_ONLY",
+        "input_contract_status": "SIGNAL_CONTRACT_MISMATCH",
+        "ai_status": "MODEL_PENDING",
+        "blocked_reason": "MR60_NATIVE_MODEL_PENDING",
+        "output_status": "NOT_AVAILABLE"
+      }
+    },
+    "thermal": {
+      "state": {
+        "sensor_id": "thermal",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 4,
+        "last_received_at": 4.0,
+        "last_valid_at": 4.0,
+        "values": {
+          "frame_sequence": 4,
+          "minimum_raw": 1000,
+          "maximum_raw": 2000
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT",
+        "input_contract_status": "VALIDATED_WITH_LIMITATIONS",
+        "ai_status": "BLOCKED",
+        "blocked_reason": "INT8_QUANTIZATION_REVIEW_REQUIRED",
+        "output_status": "NOT_REQUESTED"
+      }
+    },
+    "co2": {
+      "state": {
+        "sensor_id": "co2",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 4,
+        "last_received_at": 4.0,
+        "last_valid_at": 4.0,
+        "values": {
+          "ppm": 700.0,
+          "latest_measurement_ppm": 700.0,
+          "measurement_event_id": 1,
+          "measurement_event_count": 1,
+          "measurement_event_valid": true
+        }
+      },
+      "ai": {
+        "available": true,
+        "error": null,
+        "state": "OCCUPIED"
+      },
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT",
+        "input_contract_status": "SATISFIED",
+        "ai_status": "ACTIVE",
+        "blocked_reason": null,
+        "output_status": "AVAILABLE"
+      }
+    },
+    "pir": {
+      "state": {
+        "sensor_id": "pir",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 4,
+        "last_received_at": 4.0,
+        "last_valid_at": 4.0,
+        "values": {
+          "motion": false,
+          "event_id": 1
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "NOT_APPLICABLE",
+        "input_contract_status": "NOT_APPLICABLE",
+        "ai_status": "NOT_APPLICABLE",
+        "blocked_reason": null,
+        "output_status": "NOT_APPLICABLE",
+        "sensor_value_status": "NO_MOTION"
+      }
+    }
+  },
+  "status_after": {
+    "schema": "safenest.api.status.v1",
+    "timestamp": 8.0,
+    "revision": 8,
+    "publication_revision": 8,
+    "system": "ONLINE",
+    "system_health": "HEALTHY",
+    "device_health": null,
+    "risk": {
+      "system_health": "HEALTHY",
+      "components": {}
+    },
+    "emergency": {
+      "active": false,
+      "transition_id": null,
+      "entered_at": null,
+      "acknowledged": false,
+      "acknowledged_at": null,
+      "buzzer_active": false,
+      "latched_while_offline": false,
+      "buzzer": {
+        "mode": "unconfigured",
+        "available": false,
+        "simulated": true,
+        "active": false
+      }
+    },
+    "offline": false,
+    "ready": true,
+    "runtime_status": {
+      "status": "READY_WITH_LIMITATIONS",
+      "sensors": {
+        "co2": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT",
+          "input_contract_status": "SATISFIED",
+          "ai_status": "ACTIVE",
+          "blocked_reason": null,
+          "output_status": "AVAILABLE"
+        },
+        "thermal": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT",
+          "input_contract_status": "VALIDATED_WITH_LIMITATIONS",
+          "ai_status": "BLOCKED",
+          "blocked_reason": "INT8_QUANTIZATION_REVIEW_REQUIRED",
+          "output_status": "NOT_REQUESTED"
+        },
+        "mmwave": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "PRESENT_HISTORICAL_ONLY",
+          "input_contract_status": "SIGNAL_CONTRACT_MISMATCH",
+          "ai_status": "MODEL_PENDING",
+          "blocked_reason": "MR60_NATIVE_MODEL_PENDING",
+          "output_status": "NOT_AVAILABLE"
+        },
+        "pir": {
+          "sensor_status": "AVAILABLE",
+          "sensor_connectivity": "CONNECTED",
+          "data_freshness": "CURRENT",
+          "artifact_status": "NOT_APPLICABLE",
+          "input_contract_status": "NOT_APPLICABLE",
+          "ai_status": "NOT_APPLICABLE",
+          "blocked_reason": null,
+          "output_status": "NOT_APPLICABLE",
+          "sensor_value_status": "NO_MOTION"
+        }
+      },
+      "limitations": [
+        "thermal",
+        "mmwave"
+      ]
+    },
+    "mmwave": {
+      "state": {
+        "sensor_id": "mmwave",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 8,
+        "last_received_at": 8.0,
+        "last_valid_at": 8.0,
+        "values": {
+          "respiration_rate_bpm": 15.0,
+          "presence_available": false
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT_HISTORICAL_ONLY",
+        "input_contract_status": "SIGNAL_CONTRACT_MISMATCH",
+        "ai_status": "MODEL_PENDING",
+        "blocked_reason": "MR60_NATIVE_MODEL_PENDING",
+        "output_status": "NOT_AVAILABLE"
+      }
+    },
+    "thermal": {
+      "state": {
+        "sensor_id": "thermal",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 8,
+        "last_received_at": 8.0,
+        "last_valid_at": 8.0,
+        "values": {
+          "frame_sequence": 8,
+          "minimum_raw": 1000,
+          "maximum_raw": 2000
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT",
+        "input_contract_status": "VALIDATED_WITH_LIMITATIONS",
+        "ai_status": "BLOCKED",
+        "blocked_reason": "INT8_QUANTIZATION_REVIEW_REQUIRED",
+        "output_status": "NOT_REQUESTED"
+      }
+    },
+    "co2": {
+      "state": {
+        "sensor_id": "co2",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 8,
+        "last_received_at": 8.0,
+        "last_valid_at": 8.0,
+        "values": {
+          "ppm": 700.0,
+          "latest_measurement_ppm": 700.0,
+          "measurement_event_id": 2,
+          "measurement_event_count": 2,
+          "measurement_event_valid": true
+        }
+      },
+      "ai": {
+        "available": true,
+        "error": null,
+        "state": "OCCUPIED"
+      },
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "PRESENT",
+        "input_contract_status": "SATISFIED",
+        "ai_status": "ACTIVE",
+        "blocked_reason": null,
+        "output_status": "AVAILABLE"
+      }
+    },
+    "pir": {
+      "state": {
+        "sensor_id": "pir",
+        "status": "LIVE",
+        "connected": true,
+        "stale": false,
+        "valid": true,
+        "current": true,
+        "sequence": 8,
+        "last_received_at": 8.0,
+        "last_valid_at": 8.0,
+        "values": {
+          "motion": false,
+          "event_id": 1
+        }
+      },
+      "ai": {},
+      "risk_component": {},
+      "runtime_status": {
+        "sensor_status": "AVAILABLE",
+        "sensor_connectivity": "CONNECTED",
+        "data_freshness": "CURRENT",
+        "artifact_status": "NOT_APPLICABLE",
+        "input_contract_status": "NOT_APPLICABLE",
+        "ai_status": "NOT_APPLICABLE",
+        "blocked_reason": null,
+        "output_status": "NOT_APPLICABLE",
+        "sensor_value_status": "NO_MOTION"
+      }
+    }
+  },
+  "status_error_before": null,
+  "status_error_after": null,
+  "socket_table": "LISTEN 0 4096 0.0.0.0:8000 0.0.0.0:*\nLISTEN 0 2 0.0.0.0:9000 0.0.0.0:*\nUNCONN 0 0 0.0.0.0:5005 0.0.0.0:*\n",
+  "socket_error": null,
+  "window_seconds": 20
+}

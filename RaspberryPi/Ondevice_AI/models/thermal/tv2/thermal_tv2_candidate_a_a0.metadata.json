@@ -1,0 +1,79 @@
+{
+  "schema_version": "safenest.team.thermal.tv2_candidate_a_a0_fp32.v1",
+  "model_id": "thermal_tv2_candidate_a_a0_fp32_v1",
+  "artifact_path": "models/thermal/tv2/thermal_tv2_candidate_a_a0_fp32_v1.tflite",
+  "artifact_sha256": "a158a70c4735e28eec70b5a996f82c91f452b94bcc24c040838143f4a55b1985",
+  "artifact_size_bytes": 264704,
+  "source": {
+    "repository": "https://github.com/sheepmeat/test",
+    "commit": "4dccd25205af8994d29d03d75ebd0d7a7d6263e2",
+    "pull_request": "https://github.com/sheepmeat/test/pull/197",
+    "source_path": "models/thermal/candidates/tv2_candidate_a/A0_hn000_FRAME_ROBUST_P2_P98_V1_COARSE_SPATIAL_RETAIN_FLATTEN_V1_seed42_fp32.tflite",
+    "stage": "G5",
+    "import_mode": "EXACT_FROZEN_TFLITE_BYTES"
+  },
+  "architecture_id": "COARSE_SPATIAL_RETAIN_FLATTEN_V1",
+  "parameter_count": 64387,
+  "artifact_origin": "SAME_POLICY_SEED42_REEXPORT_AFTER_NOMINATION",
+  "exact_final_9run_weight_instance": false,
+  "framework": "TensorFlow Lite",
+  "quantization": "NONE",
+  "representation": "RELATIVE_THERMAL_APPEARANCE_V1",
+  "preprocessing_id": "FRAME_ROBUST_P2_P98_V1",
+  "source_geometry_bridge": "TEAM_RUNTIME_62X80_AS_RECEIVED_EXPERIMENTAL_BRIDGE",
+  "input": {
+    "name": "serving_default_relative_thermal_appearance:0",
+    "shape": [1, 62, 80, 1],
+    "dtype": "float32",
+    "unit": "RELATIVE_DIMENSIONLESS_NOT_CELSIUS"
+  },
+  "output": {
+    "name": "StatefulPartitionedCall_1:0",
+    "shape": [1, 3],
+    "dtype": "float32",
+    "semantic": "softmax_proxy_probabilities"
+  },
+  "class_map": {
+    "0": "NOT_HUMAN",
+    "1": "HUMAN_NORMAL",
+    "2": "HUMAN_FALL_PROXY"
+  },
+  "standalone_development_characterization": {
+    "role": "PUBLIC_SDT_DEVELOPMENT",
+    "n": 8000,
+    "confusion": [[2000, 0, 0], [4, 3982, 14], [0, 17, 1983]],
+    "normal_to_fall_proxy": "14 / 4000",
+    "fall_proxy_recall": 0.9915,
+    "macro_f1": 0.995623,
+    "keras_tflite_argmax_agreement": "8000 / 8000 PASS",
+    "locked_public_test_access": 0
+  },
+  "deployment_boundary": {
+    "runtime_role": "CONTROLLED_TEAM_TEST",
+    "active_runtime_selector": false,
+    "default_activation": false,
+    "controlled_test_allowed": true,
+    "deployment_allowed": false,
+    "preferred": true,
+    "offline_family_status": "A_PREFERRED",
+    "status_labels": [
+      "STANDALONE_G5_PASS_WITH_LIMITATIONS",
+      "A_PREFERRED_OFFLINE",
+      "CONTROLLED_TEAM_TEST",
+      "DEVICE_VALIDATION_PENDING"
+    ],
+    "safety_authority": false,
+    "risk_authority": "LIMITED_POSTURE_PROXY",
+    "risk_contribution": "LIMITED_NON_EMERGENCY",
+    "proxy_risk_score": 0.4,
+    "DEVICE_VALIDATED": false,
+    "PI_SMOKE": "NOT_PERFORMED",
+    "forbidden_claims": [
+      "production",
+      "device validated",
+      "real-fall validated",
+      "clinical",
+      "ACTIVE_FINAL"
+    ]
+  }
+}
