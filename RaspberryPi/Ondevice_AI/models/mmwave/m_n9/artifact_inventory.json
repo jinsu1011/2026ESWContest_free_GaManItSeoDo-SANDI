@@ -1,0 +1,53 @@
+{
+  "classification": "INTEGRATION_M_N9_ARTIFACT_INVENTORY",
+  "artifact_id": "MMWAVE_M_N9_FULL_INT8_V1",
+  "not_a_b_stage_overlay": true,
+  "HISTORICAL_B_NOT_ACTIVE": true,
+  "DEVICE_VALIDATED": "NO",
+  "PI_SMOKE": "NOT_PERFORMED",
+  "PRESENCE_GATE_REQUIRED": "YES",
+  "source_ai": {
+    "canonical_remote": "https://github.com/sheepmeat/test.git",
+    "source_sha": "390f3be3d75987a79a0e0438ba8a9d5e9e19dc97",
+    "source_sha_short": "390f3be"
+  },
+  "integration_repo": {
+    "canonical_remote": "https://github.com/yuname121/integration.git",
+    "base_commit": "07701974674132f7e974210612c6a7611266be70",
+    "branch": "chore/sync-mmwave-m-n9-int8"
+  },
+  "locked_artifact": {
+    "source_git_path": "models/mmwave/m_n9/MMWAVE_M_N9_FULL_INT8_V1.tflite",
+    "destination": "sources/ondevice_ai/models/mmwave/m_n9/MMWAVE_M_N9_FULL_INT8_V1.tflite",
+    "artifact_sha256": "3b008af4be0facc4037c2afd3fe39292fb794208eb4370dbe6916b2d15aa38a4",
+    "artifact_size_bytes": 11816,
+    "lineage": "MMWAVE_M_N6_SELECTED_FLOAT_V1 -> FULL_INT8",
+    "source_float_sha256": "9de3818c0f4854f8512c9d390d290938b6e562d590e0775cb1dab885cc72e2ab",
+    "M_N8_STATUS": "SKIPPED_NOT_JUSTIFIED"
+  },
+  "input_quant": {
+    "dtype": "int8",
+    "shape": [1, 240, 1],
+    "scale": 0.5623255372047424,
+    "zero_point": 4,
+    "quantization_formula": "q = clip(round(x / scale + zero_point), -128, 127)"
+  },
+  "output_quant": {
+    "dtype": "int8",
+    "shape": [1, 3],
+    "scale": 0.00390625,
+    "zero_point": -128,
+    "dequantization_formula": "x_float = (q - zero_point) * scale"
+  },
+  "class_map": {
+    "0": "NORMAL",
+    "1": "RAPID_OR_ABNORMAL",
+    "2": "APNEA"
+  },
+  "historical_not_active": [
+    "sources/ondevice_ai/models/mmwave/mmwave_resp_int8_v0.1.0.tflite",
+    "sources/ondevice_ai/models/mmwave/mmwave_resp_int8_v0.2.0_candidate.tflite",
+    "sources/ondevice_ai/models/rp_x0_b_complete/mmwave/M-B3_CONV1D_GAP_BASELINE_seed42_M-B5_CAL_CLASS_BALANCED_120_int8.tflite"
+  ],
+  "do_not_place_under": "sources/ondevice_ai/models/rp_x0_b_complete/"
+}

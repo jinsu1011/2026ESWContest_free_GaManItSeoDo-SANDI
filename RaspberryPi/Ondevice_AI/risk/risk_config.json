@@ -1,0 +1,55 @@
+{
+  "schema_version": "4.0",
+  "status": "v4_implementation_locked_hil_pending",
+  "respiration": {
+    "normal_min_rpm": 12.0,
+    "normal_max_rpm": 20.0,
+    "apnea_confirm_seconds": 2.0
+  },
+  "motion": {
+    "pir_no_motion_seconds": 15.0,
+    "presence_required": true
+  },
+  "co2": {
+    "warning_ppm": 1000.0,
+    "danger_ppm": 2500.0,
+    "slope_warning_ppm_per_min": 15.0
+  },
+  "risk": {
+    "v4_weights": {
+      "S1_mmwave_apnea": 0.35,
+      "S2_co2_enclosure": 0.35,
+      "S3_pir_motion": 0.15,
+      "S4_thermal_posture": 0.15
+    },
+    "v4_thresholds": {
+      "caution_min": 30.0,
+      "danger_min": 60.0
+    },
+    "emergency_override": {
+      "enabled": true,
+      "confirmed_conditions": [
+        "mmwave_apnea",
+        "thermal_fall_confidence_gte_0.8"
+      ],
+      "effective_risk_score": 100.0,
+      "preserve_weighted_risk_score": true
+    },
+    "fallback_budget_ms": 1.0,
+    "last_good_ttl_seconds": {
+      "S1": 2.0,
+      "S2": 15.0,
+      "S3": 2.0,
+      "S4": 1.0
+    },
+    "weights": {
+      "respiration": 0.30,
+      "environment": 0.25,
+      "vital_hr": 0.20,
+      "posture_fall": 0.15,
+      "motion": 0.10
+    },
+    "normal_max": 35.0,
+    "caution_max": 75.0
+  }
+}

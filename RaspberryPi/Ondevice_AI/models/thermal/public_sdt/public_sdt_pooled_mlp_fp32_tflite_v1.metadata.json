@@ -1,0 +1,78 @@
+{
+  "schema_version": "safenest.team.thermal.b6r_public_sdt_fp32_active.v1",
+  "model_id": "thermal_public_sdt_pooled_mlp_fp32_tflite_v1",
+  "artifact_path": "models/thermal/public_sdt/public_sdt_pooled_mlp_fp32_tflite_v1.tflite",
+  "artifact_sha256": "f88d65d76dbb21862e1f3cdff17cefb038a432047ded6ac8d5563bc8bc8c52ff",
+  "artifact_size_bytes": 70592,
+  "source": {
+    "repository": "https://github.com/sheepmeat/test",
+    "commit": "ccdb2b16ddbbec82d1a4d53cef6b23314ebf366b",
+    "pull_request": "https://github.com/sheepmeat/test/pull/183",
+    "source_path": "models/thermal/public_sdt/public_sdt_pooled_mlp_fp32_tflite_v1.tflite",
+    "stage": "B6R-P2"
+  },
+  "architecture_id": "PUBLIC_SDT_ADAPTIVE_POOL_MLP_V1",
+  "parameter_count": 2691,
+  "artifact_release": "FINAL_RUNTIME_MODEL",
+  "model_lifecycle": "ACTIVE_FINAL",
+  "framework": "TensorFlow Lite",
+  "quantization": "NONE",
+  "input": {
+    "name": "serving_default_thermal_frame:0",
+    "shape": [
+      1,
+      62,
+      80,
+      1
+    ],
+    "dtype": "float32",
+    "semantic": "per_frame_minmax_normalized_thermal_frame"
+  },
+  "output": {
+    "name": "StatefulPartitionedCall_1:0",
+    "shape": [
+      1,
+      3
+    ],
+    "dtype": "float32",
+    "semantic": "softmax_proxy_probabilities"
+  },
+  "class_map": {
+    "0": "NOT_HUMAN",
+    "1": "HUMAN_NORMAL",
+    "2": "HUMAN_FALL_PROXY"
+  },
+  "dataset": {
+    "authority": "PUBLIC_SDT_ONLY_NOT_MI48",
+    "dataset_id": "PUBLIC_SDT_48000_THERMAL_ONLY_V1",
+    "preprocessing_id": "PUBLIC_SDT_BILINEAR_62X80_FRAME_MINMAX_V1",
+    "label_mapping_id": "SDT_POSTURE_TO_SAFENEST_3CLASS_PROXY_V1",
+    "development_sample_count": 8000,
+    "locked_public_test_access_count": 0,
+    "development_accuracy": 0.907,
+    "development_macro_f1": 0.901326741104394,
+    "metrics_role": "DEVELOPMENT_DIAGNOSTIC_ONLY"
+  },
+  "deployment_boundary": {
+    "runtime_role": "ACTIVE_THERMAL_PUBLIC_SDT_SOFTWARE_ONLY",
+    "active_runtime_selector": true,
+    "default_activation": true,
+    "deployment_allowed": true,
+    "safety_authority": false,
+    "risk_authority": "LIMITED_POSTURE_PROXY",
+    "risk_contribution": "LIMITED_NON_EMERGENCY",
+    "proxy_risk_score": 0.4,
+    "real_fall_validation": false,
+    "mi48_validation": false,
+    "thermal90_validation": false,
+    "raspberry_pi_validation": "BLOCKED_HARDWARE",
+    "physical_validation": false,
+    "claim_boundary": "PUBLIC_DATA_SOFTWARE_ONLY_ACTIVE_INFERENCE_LIMITED_RISK_NO_EMERGENCY"
+  },
+  "rollback": {
+    "active_model_key": "thermal",
+    "active_model_path": "models/thermal/thermal_fall_int8_v0.1.0.tflite",
+    "active_model_sha256": "5b56da8d127ccef85f30b6459cc0cfe2d86490e41f3caa5bd2a7b70bbc46ae84",
+    "action": "Point active_runtime_selectors.thermal and Runtime LazyModel back to models.thermal, then restore legacy deployment_allowed only for the rollback window."
+  }
+}

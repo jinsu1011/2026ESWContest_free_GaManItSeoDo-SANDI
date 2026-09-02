@@ -1,0 +1,17 @@
+{
+  "effective_std": 2.8684523405441222,
+  "epsilon": 1e-06,
+  "fit_pixel_count": 158720000,
+  "fit_role": "TRAIN",
+  "fit_sample_count": 32000,
+  "mean": 22.769290618485442,
+  "phase": "T-B4",
+  "profile_id": "P1_TRAIN_FITTED_GLOBAL_ZSCORE",
+  "real_fit": false,
+  "refit": false,
+  "schema_version": "1.0",
+  "statistics_checksum": "10b5da044ef33f26715544c3d4bf56e9d999d6c65139e931f6997583b3f5b816",
+  "std": 2.8684523405441222,
+  "train_artifact_sha256": "749c847fc9ab50ea5eee8827f0d47b5ebaa48165732a382c59f8b96c565b9d93",
+  "validation_fit": false
+}

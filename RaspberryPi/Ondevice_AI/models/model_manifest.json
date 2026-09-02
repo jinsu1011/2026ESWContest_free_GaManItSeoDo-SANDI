@@ -1,0 +1,697 @@
+{
+  "schema_version": "1.0",
+  "project": "SafeNest_V6",
+  "generated_at": "2026-08-28T00:00:00+09:00",
+  "active_runtime_selectors": {
+    "thermal": "thermal_public_sdt_fp32_active"
+  },
+  "controlled_test_runtime_selectors": {
+    "thermal": [
+      "thermal_public_sdt_fp32_active",
+      "thermal_tv2_candidate_a_a0_fp32_v1",
+      "thermal_tv2_candidate_b_seed42_fp32_test_v1"
+    ]
+  },
+  "models": {
+    "thermal": {
+      "model_id": "thermal_fall_int8",
+      "version": "0.1.0",
+      "status": "historical_legacy",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "CONFIRMED_SYNTHETIC_ONLY",
+      "deployment_allowed": false,
+      "runtime_role": "LEGACY_THERMAL_INT8_NONACTIVE",
+      "active_runtime_selector": false,
+      "default_activation": false,
+      "safety_authority": true,
+      "HISTORICAL_NOT_ACTIVE": true,
+      "not_active_reason": "SUPERSEDED_BY_PUBLIC_SDT_FP32_ACTIVE_SELECTOR",
+      "role": "thermal_posture_3class",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/thermal/thermal_fall_int8_v0.1.0.tflite",
+      "size_bytes": 318184,
+      "sha256": "5b56da8d127ccef85f30b6459cc0cfe2d86490e41f3caa5bd2a7b70bbc46ae84",
+      "input": {
+        "name": "serving_default_keras_tensor:0",
+        "shape": [
+          1,
+          62,
+          80,
+          1
+        ],
+        "dtype": "int8",
+        "scale": 0.003921568859368563,
+        "zero_point": -128,
+        "semantic": "normalized_thermal_frame"
+      },
+      "output": {
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "int8",
+        "scale": 0.00390625,
+        "zero_point": -128,
+        "semantic": "softmax_probabilities"
+      },
+      "class_map": {
+        "0": "NOT_HUMAN",
+        "1": "HUMAN_NORMAL",
+        "2": "HUMAN_FALL"
+      }
+    },
+    "thermal_public_sdt_fp32_active": {
+      "model_id": "thermal_public_sdt_pooled_mlp_fp32_tflite_v1",
+      "version": "b6r_p2_fp32_v1",
+      "status": "active_final_runtime_model_with_validation_limitations",
+      "artifact_release": "FINAL_RUNTIME_MODEL",
+      "model_lifecycle": "ACTIVE_FINAL",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "PASS_WITH_LIMITATIONS_PUBLIC_DATA_SOFTWARE_ONLY",
+      "deployment_allowed": true,
+      "deployment_scope": "ACTIVE_RUNTIME_SELECTOR_SOFTWARE_ONLY",
+      "runtime_role": "ACTIVE_THERMAL_PUBLIC_SDT_SOFTWARE_ONLY",
+      "active_runtime_selector": true,
+      "default_activation": true,
+      "controlled_test_allowed": true,
+      "preprocessing_id": "PUBLIC_SDT_BILINEAR_62X80_FRAME_MINMAX_V1",
+      "representation": "PER_FRAME_MINMAX_NORMALIZED_THERMAL_FRAME",
+      "safety_authority": false,
+      "risk_authority": "LIMITED_POSTURE_PROXY",
+      "risk_contribution": "LIMITED_NON_EMERGENCY",
+      "proxy_risk_score": 0.4,
+      "hardware_validation": "BLOCKED_HARDWARE",
+      "DEVICE_VALIDATED": false,
+      "PI_SMOKE": "NOT_PERFORMED",
+      "role": "thermal_posture_3class_public_proxy",
+      "framework": "TensorFlow Lite",
+      "quantization": "none_fp32",
+      "path": "models/thermal/public_sdt/public_sdt_pooled_mlp_fp32_tflite_v1.tflite",
+      "metadata_path": "models/thermal/public_sdt/public_sdt_pooled_mlp_fp32_tflite_v1.metadata.json",
+      "size_bytes": 70592,
+      "sha256": "f88d65d76dbb21862e1f3cdff17cefb038a432047ded6ac8d5563bc8bc8c52ff",
+      "source_repo": "https://github.com/sheepmeat/test",
+      "source_sha": "ccdb2b16ddbbec82d1a4d53cef6b23314ebf366b",
+      "source_stage": "B6R-P2",
+      "input": {
+        "name": "serving_default_thermal_frame:0",
+        "shape": [
+          1,
+          62,
+          80,
+          1
+        ],
+        "dtype": "float32",
+        "semantic": "per_frame_minmax_normalized_thermal_frame"
+      },
+      "output": {
+        "name": "StatefulPartitionedCall_1:0",
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "float32",
+        "semantic": "softmax_proxy_probabilities"
+      },
+      "class_map": {
+        "0": "NOT_HUMAN",
+        "1": "HUMAN_NORMAL",
+        "2": "HUMAN_FALL_PROXY"
+      },
+      "safety_semantic": "RISK_GATING_ONLY_NO_FALL_EMERGENCY_UNTIL_PI_AND_REAL_FALL_VALIDATION",
+      "block_reason": "RASPBERRY_PI_AND_REAL_SENSOR_VALIDATION_NOT_PERFORMED",
+      "notes": [
+        "PUBLIC_SDT_ONLY / SOFTWARE_ONLY / ACTIVE_INFERENCE_SELECTOR / LIMITED_RISK_GATING.",
+        "HUMAN_FALL_PROXY is a posture proxy, not real-fall or safety validation.",
+        "Runtime maps HUMAN_FALL_PROXY to bounded risk score 0.4 and never to a fall emergency."
+      ]
+    },
+    "thermal_tv2_candidate_a_a0_fp32_v1": {
+      "model_id": "thermal_tv2_candidate_a_a0_fp32_v1",
+      "version": "tv2_a0_g5_fp32_v1",
+      "status": "controlled_team_test",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "STANDALONE_G5_PASS_WITH_LIMITATIONS",
+      "deployment_allowed": false,
+      "deployment_scope": "CONTROLLED_TEST_ONLY",
+      "runtime_role": "CONTROLLED_TEAM_TEST",
+      "active_runtime_selector": false,
+      "default_activation": false,
+      "controlled_test_allowed": true,
+      "preferred": true,
+      "offline_family_status": "A_PREFERRED",
+      "safety_authority": false,
+      "risk_authority": "LIMITED_POSTURE_PROXY",
+      "risk_contribution": "LIMITED_NON_EMERGENCY",
+      "proxy_risk_score": 0.4,
+      "hardware_validation": "NOT_PERFORMED",
+      "DEVICE_VALIDATED": false,
+      "PI_SMOKE": "NOT_PERFORMED",
+      "role": "thermal_posture_3class_tv2_candidate_a",
+      "framework": "TensorFlow Lite",
+      "quantization": "none_fp32",
+      "path": "models/thermal/tv2/thermal_tv2_candidate_a_a0_fp32_v1.tflite",
+      "metadata_path": "models/thermal/tv2/thermal_tv2_candidate_a_a0.metadata.json",
+      "size_bytes": 264704,
+      "sha256": "a158a70c4735e28eec70b5a996f82c91f452b94bcc24c040838143f4a55b1985",
+      "source_repo": "https://github.com/sheepmeat/test",
+      "source_sha": "4dccd25205af8994d29d03d75ebd0d7a7d6263e2",
+      "source_phase": "G5",
+      "source_pr": "https://github.com/sheepmeat/test/pull/197",
+      "representation": "RELATIVE_THERMAL_APPEARANCE_V1",
+      "preprocessing_id": "FRAME_ROBUST_P2_P98_V1",
+      "source_geometry_bridge": "TEAM_RUNTIME_62X80_AS_RECEIVED_EXPERIMENTAL_BRIDGE",
+      "parameter_count": 64387,
+      "input": {
+        "name": "serving_default_relative_thermal_appearance:0",
+        "shape": [
+          1,
+          62,
+          80,
+          1
+        ],
+        "dtype": "float32",
+        "semantic": "relative_thermal_appearance_p2_p98"
+      },
+      "output": {
+        "name": "StatefulPartitionedCall_1:0",
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "float32",
+        "semantic": "softmax_proxy_probabilities"
+      },
+      "class_map": {
+        "0": "NOT_HUMAN",
+        "1": "HUMAN_NORMAL",
+        "2": "HUMAN_FALL_PROXY"
+      },
+      "safety_semantic": "RISK_GATING_ONLY_NO_FALL_EMERGENCY",
+      "block_reason": "CONTROLLED_TEST_ONLY_NOT_DEFAULT_RUNTIME",
+      "notes": [
+        "STANDALONE_G5_PASS_WITH_LIMITATIONS / A_PREFERRED_OFFLINE / CONTROLLED_TEAM_TEST.",
+        "Not production. Not device validated. Not real-fall validated. Not clinical.",
+        "HUMAN_FALL_PROXY remains a bounded posture proxy (proxy_risk_score 0.4).",
+        "Exact frozen standalone FP32 TFLite import; no Team retraining or reconversion."
+      ]
+    },
+    "thermal_tv2_candidate_b_seed42_fp32_test_v1": {
+      "model_id": "thermal_tv2_candidate_b_seed42_fp32_test_v1",
+      "version": "tv2_b_seed42_fp32_test_v1",
+      "status": "controlled_comparison_only",
+      "artifact_status": "TEAM_CONVERTED_FROM_FROZEN_KERAS",
+      "validation_status": "PACKAGING_SMOKE_ONLY_NOT_SCIENTIFICALLY_REVALIDATED",
+      "deployment_allowed": false,
+      "deployment_scope": "CONTROLLED_TEST_ONLY",
+      "runtime_role": "CONTROLLED_COMPARISON_ONLY",
+      "active_runtime_selector": false,
+      "default_activation": false,
+      "controlled_test_allowed": true,
+      "preferred": false,
+      "offline_family_status": "B_NOT_COMPETITIVE",
+      "safety_authority": false,
+      "risk_authority": "LIMITED_POSTURE_PROXY",
+      "risk_contribution": "LIMITED_NON_EMERGENCY",
+      "proxy_risk_score": 0.4,
+      "hardware_validation": "NOT_PERFORMED",
+      "DEVICE_VALIDATED": false,
+      "PI_SMOKE": "NOT_PERFORMED",
+      "role": "thermal_posture_3class_tv2_candidate_b",
+      "framework": "TensorFlow Lite",
+      "quantization": "none_fp32",
+      "path": "models/thermal/tv2/thermal_tv2_candidate_b_seed42_fp32_test_v1.tflite",
+      "metadata_path": "models/thermal/tv2/thermal_tv2_candidate_b_seed42.metadata.json",
+      "size_bytes": 24100,
+      "sha256": "f5b9ecef8def2668bb65131671134e443c600e38c2575d4350e242f1abc0dfb4",
+      "source_repo": "https://github.com/sheepmeat/test",
+      "source_sha": "4dccd25205af8994d29d03d75ebd0d7a7d6263e2",
+      "source_phase": "B_C1_MATCHED_EXPERIMENT",
+      "source_pr": "https://github.com/sheepmeat/test/pull/196",
+      "source_keras_path": "models/thermal/candidates/tv2_candidate_b/B_DEPTHWISE_SEPARABLE_seed42.keras",
+      "source_keras_sha256": "42563c3316e9e8511ab897aaa4dfd9a154887f3a0270d5dfb77a7a344cd3ff35",
+      "source_keras_size_bytes": 98408,
+      "converter_tensorflow_version": "2.21.0",
+      "representation": "RELATIVE_THERMAL_APPEARANCE_V1",
+      "preprocessing_id": "FRAME_ROBUST_P2_P98_V1",
+      "source_geometry_bridge": "TEAM_RUNTIME_62X80_AS_RECEIVED_EXPERIMENTAL_BRIDGE",
+      "parameter_count": 4387,
+      "input": {
+        "name": "serving_default_relative_thermal_appearance:0",
+        "shape": [
+          1,
+          62,
+          80,
+          1
+        ],
+        "dtype": "float32",
+        "semantic": "relative_thermal_appearance_p2_p98"
+      },
+      "output": {
+        "name": "StatefulPartitionedCall_1:0",
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "float32",
+        "semantic": "softmax_proxy_probabilities"
+      },
+      "class_map": {
+        "0": "NOT_HUMAN",
+        "1": "HUMAN_NORMAL",
+        "2": "HUMAN_FALL_PROXY"
+      },
+      "safety_semantic": "RISK_GATING_ONLY_NO_FALL_EMERGENCY",
+      "block_reason": "B_NOT_COMPETITIVE_CONTROLLED_COMPARISON_ONLY_NOT_DEFAULT_RUNTIME",
+      "notes": [
+        "B_NOT_COMPETITIVE / CONTROLLED_COMPARISON_ONLY / NOT_PREFERRED.",
+        "Present for operator comparison/testing only. Scientific selection did not change.",
+        "Not production. Not device validated. Not real-fall validated. Not clinical.",
+        "Team FP32 TFLite is a packaging of the frozen seed-42 Keras artifact; not retraining."
+      ]
+    },
+    "co2": {
+      "model_id": "co2_occupancy_int8",
+      "version": "0.1.0",
+      "status": "candidate",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "CONFIRMED_SYNTHETIC_ONLY",
+      "deployment_allowed": true,
+      "role": "co2_occupancy_classification",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/co2/co2_occupancy_int8_v0.1.0.tflite",
+      "metadata_path": "models/co2/co2_scaling_metadata_v0.1.0.json",
+      "size_bytes": 4464,
+      "sha256": "3a8c86c4c132df0f1edaac668d9a136c3f6234789df48f02bdda8e92f29d0462",
+      "input": {
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "int8",
+        "scale": 0.005828449968248606,
+        "zero_point": 57,
+        "semantic": "co2_slope_humidity_co2_ppm"
+      },
+      "output": {
+        "shape": [
+          1,
+          2
+        ],
+        "dtype": "int8",
+        "scale": 0.00390625,
+        "zero_point": -128,
+        "semantic": "softmax_probabilities"
+      },
+      "class_map": {
+        "0": "VACANT",
+        "1": "OCCUPIED"
+      },
+      "runtime_role": "HISTORICAL_CO2_V0_1_0",
+      "HISTORICAL_NOT_ACTIVE": true,
+      "superseded_by": "co2_occupancy_c_b6",
+      "not_active_reason": "THREE_FEATURE_CONTRACT_REQUIRES_HUMIDITY_WHICH_IS_FORBIDDEN_BY_C_B6"
+    },
+    "mmwave": {
+      "model_id": "M-PV2_FAMILY_B_TRACE_TCN_BREATHING_RR_QUALITY",
+      "panel_id": "B23",
+      "family": "family_b",
+      "seed": 23,
+      "version": "m_prot_b23_pytorch_float32_v1",
+      "status": "prototype_integration_freeze",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "TEST_REPO_PREDEPLOYMENT_COMPLETE_TEAM_PORT_UNVERIFIED_ON_PI",
+      "deployment_allowed": true,
+      "deployment_scope": "PROTOTYPE_INTEGRATION_ONLY",
+      "hardware_validation": "NOT_PERFORMED",
+      "DEVICE_VALIDATED": false,
+      "PI_SMOKE": "NOT_PERFORMED",
+      "PRESENCE_GATE_REQUIRED": true,
+      "runtime_adapter_compatible": true,
+      "runtime_role": "ACTIVE_B23_PROTOTYPE",
+      "active_runtime_selector": true,
+      "HISTORICAL_B_NOT_ACTIVE": true,
+      "HISTORICAL_M_N9_NOT_ACTIVE": true,
+      "role": "breathing_rr_quality_prototype",
+      "framework": "PyTorch",
+      "quantization": "float32_state_dict",
+      "representation": "PYTORCH_FLOAT32_STATE_DICT",
+      "path": "models/mmwave/m_prot_b23/candidate_seed_23.pt",
+      "scaler_path": "models/mmwave/m_prot_b23/scaler_statistics.json",
+      "scaler_content_sha256": "5a2583b5b5064be5480b0cf56f2a2c12d40a4a2d005eb087dc8e12106881159c",
+      "parameter_sha256": "6db949c242e25888dd20c3fc8e2305af03448aa229e3ca73e4159216a266d78e",
+      "size_bytes": 76473,
+      "sha256": "8f7de6f50d6ff62ff9b0ebfaed0b1fccd8d194c7e33781bc5b93366fae251a2c",
+      "source_repo": "https://github.com/sheepmeat/test.git",
+      "source_sha": "809b78626b442f146eccd73595f239b93de3ae2e",
+      "source_phase": "M-PROT-5A COMPLETE",
+      "input": {
+        "shape": [
+          1,
+          621
+        ],
+        "dtype": "float32",
+        "sample_rate_hz": 10,
+        "window_seconds": 30,
+        "r1_samples": 300,
+        "semantic": "family_b_trace_mask_scale_quality",
+        "r1_owns_resampling": true
+      },
+      "output": {
+        "semantic": "breathing_rr_quality",
+        "heads": [
+          "breathing",
+          "rr",
+          "quality"
+        ]
+      },
+      "notes": [
+        "PROTOTYPE_INTEGRATION_ONLY / NOT_FINAL_SELECTED_MODEL / SUBJECT_TO_REPLACEMENT",
+        "No M-N9 fallback. No TFLite/INT8 conversion. PI_TORCH_NOT_LIVE_VERIFIED.",
+        "Risk contribution deferred; B23 does not map onto NORMAL/RAPID/APNEA-proxy."
+      ]
+    },
+    "mmwave_v0_1_0": {
+      "model_id": "mmwave_resp_int8",
+      "version": "0.1.0",
+      "status": "historical_blocked",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "BLOCKED",
+      "deployment_allowed": false,
+      "block_reason": "CLASS_COLLAPSE_ON_REPOSITORY_NPZ",
+      "role": "respiration_anomaly_classification",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/mmwave/mmwave_resp_int8_v0.1.0.tflite",
+      "metadata_path": "models/mmwave/sensor_stats_metadata_v0.1.0.json",
+      "size_bytes": 466616,
+      "sha256": "43cdd6f321c2b645232162233e098c2b65549388cbc9e680a17a0eccdc8f0158",
+      "input": {
+        "name": "serving_default_keras_tensor_8:0",
+        "shape": [
+          1,
+          300,
+          1
+        ],
+        "dtype": "int8",
+        "scale": 0.03259856998920441,
+        "zero_point": -13,
+        "sample_rate_hz": 10,
+        "window_seconds": 30,
+        "semantic": "resp_phase"
+      },
+      "output": {
+        "name": "StatefulPartitionedCall_1:0",
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "int8",
+        "scale": 0.00390625,
+        "zero_point": -128,
+        "semantic": "softmax_probabilities"
+      },
+      "evaluation": {
+        "dataset_scope": "SYNTHETIC_REPOSITORY_NPZ",
+        "test_samples": 468,
+        "accuracy": 0.3996,
+        "macro_f1": 0.19,
+        "abnormal_recall": 0.0,
+        "apnea_recall": 0.0,
+        "prediction_distribution": {
+          "NORMAL": 468,
+          "RAPID_OR_ABNORMAL": 0,
+          "APNEA": 0
+        }
+      },
+      "validation": {
+        "artifact_imported": true,
+        "sha256_verified": true,
+        "tensor_contract_verified": true,
+        "local_runtime_smoke_test": true,
+        "raspberry_pi_5_benchmark": false,
+        "real_sensor_csv_validation": false
+      },
+      "class_map": {
+        "0": "NORMAL",
+        "1": "RAPID_OR_ABNORMAL",
+        "2": "APNEA"
+      },
+      "runtime_role": "HISTORICAL_V0_1_0",
+      "active_runtime_selector": false,
+      "notes": "Retained on disk. Not the active mmWave runtime selector. CLASS_COLLAPSE_ON_REPOSITORY_NPZ."
+    },
+    "mmwave_v0_2_0_candidate": {
+      "model_id": "mmwave_resp_int8_v0.2.0_candidate",
+      "version": "0.2.0_candidate",
+      "status": "candidate",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "SYNTHETIC_SMOKE_ONLY",
+      "deployment_allowed": true,
+      "real_sensor_performance": "NOT_VERIFIABLE",
+      "hardware_validation": "BLOCKED_HARDWARE",
+      "role": "respiration_anomaly_classification",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/mmwave/mmwave_resp_int8_v0.2.0_candidate.tflite",
+      "metadata_path": "models/mmwave/mmwave_resp_int8_v0.2.0_candidate_metadata.json",
+      "sha256": "85c023d3eefca13ecbb72a841974e53a56d5f4173920645d46df49a9088452ff",
+      "input": {
+        "shape": [
+          1,
+          300,
+          1
+        ],
+        "dtype": "int8",
+        "sample_rate_hz": 10,
+        "window_seconds": 30,
+        "semantic": "resp_phase"
+      },
+      "class_map": {
+        "0": "NORMAL",
+        "1": "RAPID_OR_ABNORMAL",
+        "2": "APNEA"
+      },
+      "evaluation": {
+        "total_samples": 468,
+        "accuracy": 1.0,
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "per_class_precision": {
+          "NORMAL": 1.0,
+          "RAPID_OR_ABNORMAL": 1.0,
+          "APNEA": 1.0
+        },
+        "per_class_recall": {
+          "NORMAL": 1.0,
+          "RAPID_OR_ABNORMAL": 1.0,
+          "APNEA": 1.0
+        },
+        "per_class_f1": {
+          "NORMAL": 1.0,
+          "RAPID_OR_ABNORMAL": 1.0,
+          "APNEA": 1.0
+        },
+        "confusion_matrix": [
+          [
+            187,
+            0,
+            0
+          ],
+          [
+            0,
+            239,
+            0
+          ],
+          [
+            0,
+            0,
+            42
+          ]
+        ],
+        "apnea_window_miss_rate": 0.0,
+        "false_alarm_per_hour": null,
+        "false_alarm_status": "NOT_COMPUTABLE",
+        "false_alarm_reason": "CONTINUOUS_SESSION_TIMELINE_MISSING",
+        "prediction_distribution": {
+          "NORMAL": 187,
+          "RAPID_OR_ABNORMAL": 239,
+          "APNEA": 42
+        },
+        "class_collapse": false,
+        "model_path": "models/mmwave/mmwave_resp_int8_v0.2.0_candidate.tflite",
+        "model_sha256": "85c023d3eefca13ecbb72a841974e53a56d5f4173920645d46df49a9088452ff",
+        "model_type": "INT8 TFLite",
+        "input_saturation_count": 0,
+        "input_saturation_ratio": 0.0,
+        "output_saturation_count": 0,
+        "output_saturation_ratio": 0.0,
+        "input_contract": {
+          "shape": [
+            1,
+            300,
+            1
+          ],
+          "dtype": "int8",
+          "scale": 0.012282303534448147,
+          "zero_point": 12
+        },
+        "output_contract": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "int8",
+          "scale": 0.00390625,
+          "zero_point": -128
+        }
+      },
+      "runtime_role": "HISTORICAL_V0_2_0_CANDIDATE",
+      "active_runtime_selector": false
+    },
+    "co2_occupancy_c_b6": {
+      "model_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+      "version": "c_b6_reduced_int8_v1",
+      "status": "candidate",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "C_B6_PASS_WITH_LIMITATIONS",
+      "deployment_allowed": true,
+      "runtime_role": "ACTIVE_C_B6",
+      "HISTORICAL_B_NOT_ACTIVE": null,
+      "DEVICE_VALIDATED": "NO",
+      "PI_SMOKE": "NOT_PERFORMED",
+      "role": "co2_occupancy_classification",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/rp_x0_b_complete/co2/C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001_full_integer_int8.tflite",
+      "contract_dir": "models/rp_x0_b_complete/co2",
+      "size_bytes": 1552,
+      "sha256": "c5969b367f5b5e28c4d27f1bdd6220f7d02da92e99604e3f85c9f1291e98dd3b",
+      "input": {
+        "shape": [
+          1,
+          2
+        ],
+        "dtype": "int8",
+        "scale": 0.03921568766236305,
+        "zero_point": 0,
+        "semantic": "co2_ppm_co2_slope",
+        "feature_order": [
+          "CO2",
+          "CO2_slope"
+        ],
+        "feature_units": [
+          "ppm",
+          "ppm/min"
+        ],
+        "humidity_included": false,
+        "temperature_included": false
+      },
+      "output": {
+        "shape": [
+          1,
+          1
+        ],
+        "dtype": "int8",
+        "scale": 0.00390625,
+        "zero_point": -128,
+        "semantic": "sigmoid_occupancy_probability"
+      },
+      "threshold": 0.43,
+      "threshold_source": "TRAIN_INTERNAL_ONLY",
+      "class_map": {
+        "0": "VACANT",
+        "1": "OCCUPIED"
+      },
+      "risk_semantic": "NONE",
+      "safety_semantic": "NONE",
+      "slope_profile": "CO2_SLOPE_FEATURE_PROFILE_001",
+      "notes": [
+        "Reduced feature contract: humidity and temperature are in forbidden_additional_inputs.",
+        "Occupancy only. risk_semantic and safety_semantic are NONE, so this output must not be fused into the safety risk score.",
+        "Artifact physically resides in the rp_x0_b_complete overlay; only this CO2 entry is promoted. The mmWave M-B3 entry stays HISTORICAL_B_NOT_ACTIVE.",
+        "Scaler fitted on public TRAIN only; SCD40 domain alignment remains phase C-C."
+      ]
+    },
+    "mmwave_m_n9": {
+      "model_id": "MMWAVE_M_N9_FULL_INT8_V1",
+      "version": "m_n9_full_int8_v1",
+      "status": "mac_integration_candidate",
+      "artifact_status": "CONFIRMED",
+      "validation_status": "MAC_ISOLATED_SMOKE_ONLY",
+      "deployment_allowed": false,
+      "deployment_scope": "MAC_INTEGRATION_CANDIDATE",
+      "hardware_validation": "NOT_PERFORMED",
+      "DEVICE_VALIDATED": false,
+      "PI_SMOKE": "NOT_PERFORMED",
+      "PRESENCE_GATE_REQUIRED": true,
+      "runtime_adapter_compatible": true,
+      "runtime_role": "LEGACY_M_N9_NONACTIVE",
+      "active_runtime_selector": false,
+      "HISTORICAL_B_NOT_ACTIVE": true,
+      "role": "respiration_anomaly_classification",
+      "framework": "TensorFlow Lite",
+      "quantization": "full_int8",
+      "path": "models/mmwave/m_n9/MMWAVE_M_N9_FULL_INT8_V1.tflite",
+      "lock_path": "config/mmwave/m_n9_full_int8_artifact_lock.json",
+      "input_contract_path": "config/mmwave/m_n4_canonical_input_dataset_contract.json",
+      "size_bytes": 11816,
+      "sha256": "3b008af4be0facc4037c2afd3fe39292fb794208eb4370dbe6916b2d15aa38a4",
+      "source_ai_sha": "390f3be3d75987a79a0e0438ba8a9d5e9e19dc97",
+      "lineage_float_sha256": "9de3818c0f4854f8512c9d390d290938b6e562d590e0775cb1dab885cc72e2ab",
+      "M_N8_STATUS": "SKIPPED_NOT_JUSTIFIED",
+      "input": {
+        "name": "serving_default_canonical_r2:0",
+        "shape": [
+          1,
+          240,
+          1
+        ],
+        "dtype": "int8",
+        "scale": 0.5623255372047424,
+        "zero_point": 4,
+        "sample_rate_hz": 8,
+        "window_seconds": 30,
+        "semantic": "canonical_window_local_mad_r2",
+        "quantization_formula": "q = clip(round(x / scale + zero_point), -128, 127)"
+      },
+      "output": {
+        "name": "StatefulPartitionedCall_1:0",
+        "shape": [
+          1,
+          3
+        ],
+        "dtype": "int8",
+        "scale": 0.00390625,
+        "zero_point": -128,
+        "semantic": "softmax_probabilities",
+        "dequantization_formula": "x_float = (q - zero_point) * scale"
+      },
+      "class_map": {
+        "0": "NORMAL",
+        "1": "RAPID_OR_ABNORMAL",
+        "2": "APNEA-proxy"
+      },
+      "class_semantics": {
+        "NORMAL": "SafeNest rest-condition proxy, not a clinical diagnosis",
+        "RAPID_OR_ABNORMAL": "SafeNest rapid/abnormal proxy",
+        "APNEA": "SafeNest APNEA proxy, not clinical apnea"
+      },
+      "validation": {
+        "artifact_imported": true,
+        "sha256_verified": true,
+        "tensor_contract_verified": true,
+        "local_runtime_smoke_test": true,
+        "raspberry_pi_5_benchmark": false,
+        "real_sensor_csv_validation": false,
+        "MAC_ISOLATED_LOAD": "PASS",
+        "MAC_ISOLATED_INVOKE": "PASS",
+        "MAC_ARTIFACT_SHA_MATCH": "PASS"
+      },
+      "block_reason": "SUPERSEDED_BY_B23_PROTOTYPE_M_PROT_5B"
+    }
+  }
+}

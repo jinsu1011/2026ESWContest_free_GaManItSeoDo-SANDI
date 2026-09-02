@@ -1,0 +1,158 @@
+{
+  "formula_id": "SAFENEST_RISK_V1",
+  "formula_version": "1.3.3",
+  "authored_at": "2026-09-02",
+  "owner": "integration repository (not the frozen sources/ondevice_ai snapshot)",
+  "status": "contest_report_aligned",
+  "rationale": [
+    "Weights follow current evidence maturity, not the legacy V4 0.35/0.35/0.15/0.15 split.",
+    "The overall risk formula still fuses mmWave, CO2, PIR, and thermal into R. It publishes NORMAL, DANGER, or EMERGENCY. It does not publish WARNING.",
+    "WARNING is a separate CO2-only caution formula. mmWave, PIR, and thermal can raise R and DANGER/EMERGENCY, but they cannot raise caution.",
+    "The retired absolute caution trip was warning_ppm 1500 (Indoor Air Quality Control Act enforcement-rule Table 2 footnote). A sealed room can idle near or above 1500 ppm, so that ceiling produced all-day WARNING. Table 2 default 1000 ppm was already not a live trip; field idle is about 1184 ppm.",
+    "The only remaining absolute CO2 ppm trip is immediate_danger_ppm 5000. When presence_detected is true it is the emergency override (OSHA PEL / NIOSH REL / ACGIH TLV 8-hour TWA number used as a team instantaneous emergency, not a certified occupational average). When presence is unconfirmed or vacant, 5000 ppm is demoted to CO2 WARNING. danger_ppm 2500 is retired; it no longer floors DANGER or WARNING.",
+    "DANGER and EMERGENCY require risk.presence_detected == true. Unconfirmed (presence_available is not true, presence_source UNCONFIRMED, or presence_detected is not true) and vacant rooms may only publish NORMAL or CO2 WARNING. Occupancy C-B6 does not gate this: localizing sets occupancy_available false and must not hide a confirmed person. Person-side floors (thermal fall, mmWave apnea, R>=65) are suppressed until presence is true.",
+    "After the 180 s source-clock median lock, caution enters when plus-only delta from the locked first value B reaches 500 ppm and clears at 350 ppm. Occupancy C-B6 stays risk_semantic NONE.",
+    "After lock, caution also accepts the canonical 150 s CO2 slope: 50 ppm/min raises co2_fast_rise. Slope caution does not fire while localizing, and the short local endpoint fallback cannot raise WARNING. 15 ppm/min remains a score bonus on R only.",
+    "The active public-SDT FP32 thermal model only decides person vs empty. Standing/sitting vs lying is the bbox overlay (taller-or-square → HUMAN_NORMAL score 0.0, wider → HUMAN_FALL_PROXY score 0.4). Neural pose is not a risk input. HUMAN_FALL_PROXY remains a bounded posture proxy and cannot assert a real fall or emergency.",
+    "mmWave neural output is OBSERVE_ONLY. Unverified APNEA-proxy may score when TRUSTED, but it cannot raise caution. Only hardware-verified apnea is DANGER.",
+    "PIR is corroborating only and is unavailable, not zero, when presence is unconfirmed. Long no-motion scores R but does not raise caution.",
+    "A weighted sum alone dilutes a single severe hazard, so per-signal escalation floors are applied on top of the score.",
+    "Reporting NORMAL from a small fraction of the sensor set is unsafe, so an evidence-sufficiency gate emits INDETERMINATE instead."
+  ],
+  "formula": "R = 100 * sum(w_i * s_i for available i) / sum(w_i for available i); overall = DANGER if occupied and R >= danger_min else NORMAL; caution = WARNING if locked and (delta>=500 or canonical-slope>=50), or vacant 5000 ppm; DANGER/EMERGENCY require presence_detected; level = max(overall, caution, danger_floors, emergency)",
+  "weights": {
+    "mmwave": 0.25,
+    "co2": 0.3,
+    "pir": 0.15,
+    "thermal": 0.3
+  },
+  "thresholds": {
+    "warning_min": 30.0,
+    "danger_min": 65.0
+  },
+  "evidence": {
+    "minimum_effective_weight": 0.5,
+    "insufficient_evidence_level": "INDETERMINATE"
+  },
+  "ai_acceptance": {
+    "minimum_confidence": 0.4,
+    "minimum_top_two_margin": 0.15,
+    "comment": "A 3-class thermal head near uniform output is not a decision; it is refused instead of scored."
+  },
+  "thermal": {
+    "active_model_selector": "thermal_public_sdt_fp32_active",
+    "artifact_release": "FINAL_RUNTIME_MODEL",
+    "risk_authority": "LIMITED_POSTURE_PROXY",
+    "safety_authority": false,
+    "proxy_emergency_allowed": false,
+    "fall_score_high_confidence": 1.0,
+    "fall_score_medium_confidence": 0.7,
+    "fall_score_low_confidence": 0.4,
+    "fall_high_confidence_min": 0.8,
+    "fall_medium_confidence_min": 0.6,
+    "emergency_confidence_min": 0.8,
+    "human_states": [
+      "HUMAN_NORMAL",
+      "HUMAN_FALL_PROXY",
+      "HUMAN_FALL"
+    ],
+    "class_scores": {
+      "NOT_HUMAN": 0.0,
+      "NO_HUMAN": 0.0,
+      "HUMAN_NORMAL": 0.0,
+      "HUMAN_FALL_PROXY": 0.4
+    }
+  },
+  "mmwave": {
+    "neural_trust": "OBSERVE_ONLY",
+    "neural_trust_options": [
+      "OBSERVE_ONLY",
+      "TRUSTED"
+    ],
+    "neural_trust_reason": "MMWAVE_M_N9_FULL_INT8_V1 is DEVICE_VALIDATED: NO / PI_SMOKE: NOT_PERFORMED, was trained on 337 public windows with mr60_used_for_calibration false, and on the committed 20260817 capture emits high-confidence APNEA-proxy over a signal carrying 82% of its power in the respiration band with a clean 20 rpm peak. Until a device smoke or retrain lands, the neural class is recorded but does not score. Set TRUSTED only after DEVICE_VALIDATED becomes true.",
+    "respiration_rate_source_priority": [
+      "SPECTRAL_CANONICAL_WINDOW",
+      "MR60_BREATH_RATE_RAW"
+    ],
+    "spectral_min_band_power_fraction": 0.3,
+    "class_scores": {
+      "NORMAL": 0.0,
+      "RAPID_OR_ABNORMAL": 0.5,
+      "APNEA-proxy": 0.9,
+      "APNEA": 0.9
+    },
+    "apnea_states": [
+      "APNEA",
+      "APNEA-proxy"
+    ],
+    "apnea_warning_persistence": 2,
+    "respiration_normal_min_rpm": 10.0,
+    "respiration_normal_max_rpm": 24.0,
+    "respiration_abnormal_score": 0.5,
+    "respiration_abnormal_sustained_score": 0.75,
+    "respiration_abnormal_persistence": 3
+  },
+  "co2": {
+    "curve_ppm_to_score": [
+      [
+        600.0,
+        0.0
+      ],
+      [
+        1000.0,
+        0.15
+      ],
+      [
+        2000.0,
+        0.5
+      ],
+      [
+        5000.0,
+        0.9
+      ],
+      [
+        10000.0,
+        1.0
+      ]
+    ],
+    "immediate_danger_ppm": 5000.0,
+    "baseline_delta_warning_ppm": 500.0,
+    "baseline_delta_clear_ppm": 350.0,
+    "baseline_lock_seconds": 180.0,
+    "baseline_minimum_samples": 3,
+    "baseline_max_internal_gap_seconds": 90.0,
+    "baseline_runtime_status": "ACTIVE",
+    "slope_warning_ppm_per_min": 15.0,
+    "slope_danger_ppm_per_min": 50.0,
+    "slope_warning_bonus": 0.1,
+    "slope_danger_bonus": 0.25,
+    "history_samples": 30
+  },
+  "caution_formula": {
+    "formula_id": "SAFENEST_CAUTION_CO2_V1",
+    "sensors": ["co2"],
+    "level": "WARNING",
+    "requires_baseline_lock": true,
+    "baseline_delta_enter_ppm": 500.0,
+    "baseline_delta_clear_ppm": 350.0,
+    "slope_caution_ppm_per_min": 50.0,
+    "comment": "WARNING is produced only by this formula after the room baseline locks, except vacant-room 5000 ppm which is demoted from emergency to caution. Occupied 5000 ppm stays emergency in the overall formula."
+  },
+  "pir": {
+    "no_motion_grace_seconds": 30.0,
+    "no_motion_danger_seconds": 180.0
+  },
+  "escalation_floors": {
+    "thermal_fall_confident": "DANGER",
+    "co2_immediate_danger": "DANGER",
+    "co2_relative_warning": "WARNING",
+    "co2_fast_rise": "WARNING",
+    "mmwave_apnea_hardware_verified": "DANGER"
+  },
+  "emergency_overrides": {
+    "thermal_fall_confident": true,
+    "mmwave_apnea_hardware_verified": true,
+    "mmwave_apnea_proxy": false,
+    "co2_immediate_danger": true
+  }
+}

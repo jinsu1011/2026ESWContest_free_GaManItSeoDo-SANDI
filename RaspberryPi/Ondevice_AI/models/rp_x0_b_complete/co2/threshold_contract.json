@@ -1,0 +1,12 @@
+{
+  "b5_threshold_inherited": false,
+  "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+  "historical_b5_threshold": 0.58,
+  "manifest_version": "1.0",
+  "phase": "C-B6",
+  "policy_path": "datasets/co2/manifests/c_b6_reduced_feature_candidate/threshold_selection_policy.json",
+  "result_path": "datasets/co2/manifests/c_b6_reduced_feature_candidate/threshold_selection_result.json",
+  "status": "C_B6_CANDIDATE_THRESHOLD_FROZEN",
+  "threshold": 0.43,
+  "threshold_source": "TRAIN_INTERNAL_ONLY"
+}

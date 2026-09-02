@@ -1,0 +1,48 @@
+{
+  "bpf": {
+    "btype": "bandpass",
+    "executor": "scripts/mmwave_m_b1_preprocessing.py:apply_bpf",
+    "filter_family": "Butterworth",
+    "fs_hz": 10.0,
+    "highcut_hz": 0.5,
+    "implementation": "scipy.signal.filtfilt",
+    "lowcut_hz": 0.1,
+    "order": 4,
+    "zero_phase": true
+  },
+  "bpf_enabled": true,
+  "clipping_policy": {
+    "b1_transform_amplitude_clip_applied": false,
+    "int8_quantization_clip": {
+      "applied": true,
+      "dtype": "int8",
+      "max": 127,
+      "min": -128,
+      "source": "pre-clamp quantized values before int8 clipping"
+    },
+    "legacy_abs5_clip_applied": false,
+    "legacy_abs5_clip_is_diagnostic_only": true
+  },
+  "detrend": false,
+  "dtype_behavior": "float64_transform_then_float32_model_ready_then_int8_quantized",
+  "execution_preprocessing_contract_id": "M-B10B_SELECTED_REAL_CANDIDATE_BPF_ZSCORE_V1",
+  "input_shape": [
+    null,
+    300
+  ],
+  "not_reduced_to_bpf_zscore_string_alone": true,
+  "output_shape": [
+    null,
+    300
+  ],
+  "schema_version": "M-B11_ARTIFACT_LOCK_V1",
+  "selected_profile_id": "M-B1_D0_B1_Z1",
+  "selected_profile_name": "BPF_ZSCORE",
+  "zscore": {
+    "enabled": true,
+    "fit_split": "TRAIN",
+    "fit_window_count": 327,
+    "mean": 0.0031162832173884064,
+    "std": 2.955399434649939
+  }
+}

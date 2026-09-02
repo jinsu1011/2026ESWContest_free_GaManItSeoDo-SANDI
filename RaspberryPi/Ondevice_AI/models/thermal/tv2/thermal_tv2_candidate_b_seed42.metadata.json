@@ -1,0 +1,83 @@
+{
+  "schema_version": "safenest.team.thermal.tv2_candidate_b_seed42_fp32_test.v1",
+  "model_id": "thermal_tv2_candidate_b_seed42_fp32_test_v1",
+  "artifact_path": "models/thermal/tv2/thermal_tv2_candidate_b_seed42_fp32_test_v1.tflite",
+  "artifact_sha256": "f5b9ecef8def2668bb65131671134e443c600e38c2575d4350e242f1abc0dfb4",
+  "artifact_size_bytes": 24100,
+  "source": {
+    "repository": "https://github.com/sheepmeat/test",
+    "commit": "4dccd25205af8994d29d03d75ebd0d7a7d6263e2",
+    "pull_request": "https://github.com/sheepmeat/test/pull/196",
+    "source_keras_path": "models/thermal/candidates/tv2_candidate_b/B_DEPTHWISE_SEPARABLE_seed42.keras",
+    "source_keras_sha256": "42563c3316e9e8511ab897aaa4dfd9a154887f3a0270d5dfb77a7a344cd3ff35",
+    "source_keras_size_bytes": 98408,
+    "stage": "B_C1_MATCHED_EXPERIMENT",
+    "import_mode": "TEAM_FP32_TFLITE_PACKAGING_OF_FROZEN_KERAS"
+  },
+  "architecture_id": "CAPACITY_MATCHED_DEPTHWISE_SEPARABLE_CNN",
+  "architecture_structure": "Conv2D(16) -> MaxPool -> SeparableConv2D(32) -> MaxPool -> SeparableConv2D(48) -> GAP -> Dense32 -> Dense3",
+  "parameter_count": 4387,
+  "artifact_seed": 42,
+  "framework": "TensorFlow Lite",
+  "quantization": "NONE",
+  "converter": {
+    "tensorflow_version": "2.21.0",
+    "quantization": "none_fp32",
+    "retraining": false,
+    "renomination": false
+  },
+  "representation": "RELATIVE_THERMAL_APPEARANCE_V1",
+  "preprocessing_id": "FRAME_ROBUST_P2_P98_V1",
+  "source_geometry_bridge": "TEAM_RUNTIME_62X80_AS_RECEIVED_EXPERIMENTAL_BRIDGE",
+  "input": {
+    "name": "serving_default_relative_thermal_appearance:0",
+    "shape": [1, 62, 80, 1],
+    "dtype": "float32",
+    "unit": "RELATIVE_DIMENSIONLESS_NOT_CELSIUS"
+  },
+  "output": {
+    "name": "StatefulPartitionedCall_1:0",
+    "shape": [1, 3],
+    "dtype": "float32",
+    "semantic": "softmax_proxy_probabilities"
+  },
+  "class_map": {
+    "0": "NOT_HUMAN",
+    "1": "HUMAN_NORMAL",
+    "2": "HUMAN_FALL_PROXY"
+  },
+  "packaging_smoke": {
+    "load_allocate_invoke": "PASS",
+    "keras_tflite_synthetic_argmax_agreement": "PASS",
+    "synthetic_sample_count": 5,
+    "max_abs_diff": 1.4566126083082054e-12,
+    "role": "PACKAGING_SMOKE_NOT_SCIENTIFIC_REVALIDATION"
+  },
+  "deployment_boundary": {
+    "runtime_role": "CONTROLLED_COMPARISON_ONLY",
+    "active_runtime_selector": false,
+    "default_activation": false,
+    "controlled_test_allowed": true,
+    "deployment_allowed": false,
+    "preferred": false,
+    "offline_family_status": "B_NOT_COMPETITIVE",
+    "status_labels": [
+      "B_NOT_COMPETITIVE",
+      "CONTROLLED_COMPARISON_ONLY",
+      "NOT_PREFERRED"
+    ],
+    "safety_authority": false,
+    "risk_authority": "LIMITED_POSTURE_PROXY",
+    "risk_contribution": "LIMITED_NON_EMERGENCY",
+    "proxy_risk_score": 0.4,
+    "DEVICE_VALIDATED": false,
+    "PI_SMOKE": "NOT_PERFORMED",
+    "forbidden_claims": [
+      "production",
+      "device validated",
+      "real-fall validated",
+      "clinical",
+      "scientifically revalidated"
+    ]
+  }
+}

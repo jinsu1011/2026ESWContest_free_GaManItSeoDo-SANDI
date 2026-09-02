@@ -1,0 +1,80 @@
+{
+  "schema_version": "1.0",
+  "classification": "TEAM_REPO_M_N9_ARTIFACT_IMPORT",
+  "not_a_full_ondevice_ai_resync": true,
+  "not_runtime_pipeline_rewire": true,
+  "source_repository": "https://github.com/sheepmeat/test",
+  "source_sha": "390f3be3d75987a79a0e0438ba8a9d5e9e19dc97",
+  "team_repository": "https://github.com/jinsu1011/safenest-embedded-competition",
+  "team_base_sha": "c6979cd2bc5383e6aeca94a2e4a7c6e2b0d75c16",
+  "destination_root": "RaspberryPi/Ondevice_AI",
+  "destination_root_note": "Team canonical AI path after 2026-08-17 restructure. Root ondevice_ai/ is not created.",
+  "artifact_id": "MMWAVE_M_N9_FULL_INT8_V1",
+  "artifact_sha256": "3b008af4be0facc4037c2afd3fe39292fb794208eb4370dbe6916b2d15aa38a4",
+  "artifact_size_bytes": 11816,
+  "runtime_wired": false,
+  "DEVICE_VALIDATED": false,
+  "PI_SMOKE": "NOT_PERFORMED",
+  "PRESENCE_GATE_REQUIRED": true,
+  "presence_gate_implementation": "DEFERRED_TO_RUNTIME_WIRING",
+  "historical_retained": [
+    "RaspberryPi/Ondevice_AI/models/mmwave/mmwave_resp_int8_v0.1.0.tflite",
+    "RaspberryPi/Ondevice_AI/models/mmwave/mmwave_resp_int8_v0.2.0_candidate.tflite",
+    "RaspberryPi/Ondevice_AI/config/mmwave_input_contract.yaml",
+    "RaspberryPi/Ondevice_AI/models/model_manifest.json models.mmwave (blocked CLASS_COLLAPSE)"
+  ],
+  "imported_paths": [
+    "RaspberryPi/Ondevice_AI/models/mmwave/m_n9/MMWAVE_M_N9_FULL_INT8_V1.tflite",
+    "RaspberryPi/Ondevice_AI/config/mmwave/m_n9_full_int8_artifact_lock.json",
+    "RaspberryPi/Ondevice_AI/config/mmwave/m_n4_canonical_input_dataset_contract.json",
+    "RaspberryPi/Ondevice_AI/scripts/mmwave_m_n4_canonical.py",
+    "RaspberryPi/Ondevice_AI/docs/reports/20260818_SafeNest_mmWave_M-N9_Team_Import_Handoff_KO_01.md"
+  ],
+  "intentionally_not_transferred": [
+    "sensors/ as duplicate team drivers",
+    "archive/",
+    "M-N5 candidate keras family",
+    "M-N6 keras weights",
+    "public raw archives / datasets",
+    "M-N10 capture protocol or data",
+    "CO2 / Thermal models",
+    "standalone .github/",
+    "root ondevice_ai/ (would violate canonical RaspberryPi/Ondevice_AI layout)"
+  ],
+  "collision_decisions": [
+    {
+      "path": "RaspberryPi/Ondevice_AI/models/mmwave/m_n9/",
+      "decision": "add",
+      "reason": "no existing M-N9 directory"
+    },
+    {
+      "path": "RaspberryPi/Ondevice_AI/config/mmwave/",
+      "decision": "add",
+      "reason": "new M-N4/M-N9 JSON contracts; do not replace historical config/mmwave_input_contract.yaml"
+    },
+    {
+      "path": "RaspberryPi/Ondevice_AI/config/mmwave_input_contract.yaml",
+      "decision": "preserve",
+      "reason": "historical 10 Hz x 300 BPF/z-score contract still used by current interpreter tests"
+    },
+    {
+      "path": "RaspberryPi/Ondevice_AI/models/model_manifest.json",
+      "decision": "merge",
+      "reason": "keep models.mmwave v0.1.0 blocked; add models.mmwave_m_n9 locked artifact; do not auto-promote Runtime default"
+    },
+    {
+      "path": "RaspberryPi/Ondevice_AI/models/mmwave/mmwave_resp_int8_v0.1.0.tflite",
+      "decision": "preserve"
+    },
+    {
+      "path": "COMPONENT_SOURCES.json",
+      "decision": "merge",
+      "reason": "keep ondevice_ai base SHA 4129753; record M-N9 overlay at 390f3be. Full tree resync is out of scope."
+    },
+    {
+      "path": "RaspberryPi/Runtime/ai/",
+      "decision": "preserve",
+      "reason": "pipeline rewire is a later step; current LazyModel still reads models.mmwave"
+    }
+  ]
+}

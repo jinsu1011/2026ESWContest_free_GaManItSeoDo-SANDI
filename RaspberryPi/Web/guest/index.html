@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SafeNest 방문자 안전 현황</title>
+  <style>
+    :root{color-scheme:dark;--bg:#07111f;--panel:#102033;--line:#253b52;--text:#f6f9fc;--muted:#9db0c4;--cyan:#46d7e8;--green:#4de39b;--amber:#ffc65c;--red:#ff6474}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#12324b 0,transparent 38%),var(--bg);color:var(--text);font-family:Pretendard,"Noto Sans KR",system-ui,sans-serif}
+    header,main{width:min(1080px,calc(100% - 28px));margin:auto}header{display:flex;justify-content:space-between;align-items:center;padding:24px 0 18px;border-bottom:1px solid var(--line)}
+    .brand{font-size:20px;font-weight:900}.brand i{display:inline-block;width:13px;height:13px;margin-right:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 22px var(--cyan)}
+    .live{padding:7px 11px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:13px}.live.online{color:var(--green)}main{padding:28px 0 48px}
+    .intro{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:18px}.intro h1{margin:6px 0;font-size:clamp(26px,5vw,42px)}.intro p,.label,.foot{color:var(--muted)}
+    .risk{font-size:clamp(36px,7vw,64px);font-weight:900;text-align:right}.badge{display:inline-block;padding:6px 11px;border-radius:999px;background:#183c31;color:var(--green);font-weight:800}.warning{background:#493918;color:var(--amber)}.danger,.emergency,.offline{background:#4d2027;color:var(--red)}
+    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.card{padding:18px;border:1px solid var(--line);border-radius:16px;background:rgba(16,32,51,.92);box-shadow:0 18px 50px #0003}.value{margin:11px 0 5px;font-size:25px;font-weight:850}
+    .thermal-card{grid-column:span 3}.summary-card{grid-column:span 2}.thermal{position:relative;height:390px;margin-top:14px;border-radius:12px;overflow:hidden;background:#03060c}.thermal canvas{width:100%;height:100%;display:block}.thermal.no-data{display:grid;place-items:center}.thermal.no-data:after{content:"열화상 프레임 수신 대기";position:absolute;color:var(--muted)}
+    .summary-list{display:grid;gap:12px;margin-top:18px}.summary-row{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line)}.notice{margin-top:16px;padding:13px;border-radius:11px;background:#0b1928;color:var(--muted);line-height:1.6}
+    @media(max-width:820px){.grid{grid-template-columns:repeat(2,1fr)}.thermal-card,.summary-card{grid-column:span 2}.thermal{height:320px}}@media(max-width:520px){.intro{display:block}.risk{text-align:left}.grid{grid-template-columns:1fr}.card,.thermal-card,.summary-card{grid-column:auto}.thermal{height:280px}}
+  </style>
+</head>
+<body data-space-id="">
+  <header><div class="brand"><i></i>SafeNest</div><div class="live" id="connection">서버 연결 중</div></header>
+  <main>
+    <section class="intro"><div><div class="label">QR 방문자용 실시간 안전 현황</div><h1 id="spaceName">공간 정보 확인 중</h1><p id="updated">마지막 센서값을 불러오고 있습니다.</p></div><div><div class="risk" id="riskScore">-</div><span class="badge offline" id="riskBadge">수신 대기</span></div></section>
+    <section class="grid">
+      <article class="card"><div class="label">호흡수</div><div class="value" id="breath">-</div><div class="foot">mmWave</div></article>
+      <article class="card"><div class="label">심박수</div><div class="value" id="heart">-</div><div class="foot">mmWave</div></article>
+      <article class="card"><div class="label">CO₂</div><div class="value" id="co2">-</div><div class="foot">MH-Z19B</div></article>
+      <article class="card"><div class="label">움직임</div><div class="value" id="motion">-</div><div class="foot">PIR</div></article>
+      <article class="card"><div class="label">열화상 최고값</div><div class="value" id="temperature">-</div><div class="foot">80×62 · 온도 보정 미적용</div></article>
+      <article class="card thermal-card"><div class="label">비식별 실시간 열화상</div><div class="thermal no-data" id="thermalPanel"><canvas id="thermalCanvas" width="800" height="620"></canvas></div><div class="foot" id="guestThermalStatus">프레임 수신 대기</div></article>
+      <article class="card summary-card"><div class="label">센서 융합 상태</div><div class="summary-list"><div class="summary-row"><span>재실 판단</span><strong id="occupied">-</strong></div><div class="summary-row"><span>게이트웨이</span><strong id="bridge">-</strong></div><div class="summary-row"><span>공개 범위</span><strong>현재 공간만</strong></div></div><div class="notice">이 화면은 QR 방문자 전용입니다. 공간 관리·설정·다른 공간 메뉴에는 접근할 수 없습니다.</div></article>
+    </section>
+  </main>
+  <script>
+    const spaceId=decodeURIComponent(location.pathname.split('/').filter(Boolean).pop()||'A01');document.body.dataset.spaceId=spaceId;
+    const $=id=>document.getElementById(id), fmt=(value,suffix,digits=0)=>value==null?'-':`${Number(value).toFixed(digits)} ${suffix}`;
+    const labels={'normal-empty':'정상 · 미재실','normal-occupied':'정상 · 재실',warning:'주의',danger:'위험',emergency:'긴급',offline:'통신 오류'};
+    function render(space){const r=space.reading||{},thermal=r.thermal||{};$('spaceName').textContent=space.name;$('riskScore').textContent=space.risk==null?'-':`${space.risk}/100`;$('riskBadge').textContent=labels[space.status]||space.status;$('riskBadge').className=`badge ${space.status}`;$('breath').textContent=fmt(r.breathRate,'rpm',1);$('heart').textContent=fmt(r.heartRate,'bpm',1);$('co2').textContent=fmt(r.co2,'ppm');$('motion').textContent=r.motion?'감지됨':'미감지';$('temperature').textContent=fmt(thermal.maxC??r.bodyTemperature,'℃',1);$('occupied').textContent=r.occupied?'인체 감지':'인체 미감지';$('bridge').textContent=space.bridge?.fresh?'센서 연결':'연결 확인 중';$('updated').textContent=space.lastSeen?`마지막 센서 수신 ${new Date(space.lastSeen).toLocaleTimeString('ko-KR')}`:'아직 수신된 센서값이 없습니다.';$('connection').textContent='서버 연결됨';$('connection').className='live online'}
+    async function load(){try{const response=await fetch(`/api/guest/spaces/${encodeURIComponent(spaceId)}`,{cache:'no-store'});if(!response.ok)throw Error(`HTTP ${response.status}`);render(await response.json())}catch(error){$('connection').textContent='서버 연결 끊김';$('connection').className='live';}}
+    load();setInterval(load,2000);const protocol=location.protocol==='https:'?'wss:':'ws:';try{const socket=new WebSocket(`${protocol}//${location.host}/ws`);socket.onmessage=load}catch{}
+  </script>
+  <script src="/thermal-client.js"></script>
+</body>
+</html>

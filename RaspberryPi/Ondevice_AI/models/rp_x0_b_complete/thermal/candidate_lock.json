@@ -1,0 +1,25 @@
+{
+  "candidate_lock_policy_id": "THERMAL_T_B5_OFFLINE_CANDIDATE_LOCK_001",
+  "candidate_sha256": "fa9730c29535477a3994c11e664474a0ca0116afaaa172889f47446ab2ac46be",
+  "candidate_size_bytes": 318280,
+  "candidate_stage": "F2",
+  "locked_test_used": false,
+  "next_phase": "T-C_DEVICE_DOMAIN_PROTOCOL",
+  "offline_only": true,
+  "phase": "T-B5",
+  "pi_latency_validated": false,
+  "rationale": [
+    "full INT8 artifact identity is inherited and verified",
+    "robustness protocol completed on deterministic VALIDATION samples",
+    "Mac host latency completed under frozen protocol",
+    "REAL_EVAL_DEVELOPMENT excluded from selection"
+  ],
+  "real_domain_sensitivity": "CARRIED_FORWARD_DIAGNOSTIC_ONLY",
+  "real_used_for_selection": false,
+  "schema_version": "1.0",
+  "selected_candidate_id": "FULL_INT8",
+  "selection_role": "VALIDATION",
+  "status": "OFFLINE_INT8_CANDIDATE_LOCKED_WITH_LIMITATIONS",
+  "t_c_execution_ready": "NO_REAL_CAPTURE_INTAKE_YET",
+  "thermal44_deployment_validated": false
+}

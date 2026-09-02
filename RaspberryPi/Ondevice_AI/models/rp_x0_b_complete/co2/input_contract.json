@@ -1,0 +1,28 @@
+{
+  "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001",
+  "causality": "PAST_ONLY",
+  "feature_count": 2,
+  "feature_order": [
+    "CO2",
+    "CO2_slope"
+  ],
+  "forbidden_additional_inputs": [
+    "Temperature",
+    "Humidity",
+    "Light",
+    "time_of_day",
+    "previous_predictions",
+    "sensor_metadata",
+    "new_derived_features"
+  ],
+  "history_seconds": 150.0,
+  "humidity_included": false,
+  "manifest_version": "1.0",
+  "max_internal_gap_seconds": 90.0,
+  "phase": "C-B6",
+  "scaler_fitted": "TRAIN_ONLY",
+  "scaler_path": "datasets/co2/manifests/c_b6_reduced_feature_candidate/scaler_metadata.json",
+  "slope_method": "ENDPOINT_DIFFERENCE",
+  "slope_profile": "CO2_SLOPE_FEATURE_PROFILE_001",
+  "temperature_included": false
+}

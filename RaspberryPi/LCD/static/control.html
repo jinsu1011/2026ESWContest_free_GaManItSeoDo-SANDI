@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko" translate="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="google" content="notranslate" />
+  <title>SafeNest LCD 원격 제어</title>
+  <link rel="stylesheet" href="./common.css?v=20260822-4" />
+  <style>
+    body { padding: 24px; }
+    .control-app { width: min(1240px, 100%); margin: 0 auto; }
+    .control-header {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .control-header h1 { margin: 0 0 5px; font-size: clamp(27px, 4vw, 42px); letter-spacing: -.05em; }
+    .control-header p { margin: 0; color: var(--muted); }
+    .connection-status {
+      flex: 0 0 auto;
+      padding: 7px 11px;
+      color: #12623a;
+      background: #eaf7ef;
+      border: 1px solid #b9dec8;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+    .connection-status.offline { color: #a33a32; background: #fff0ef; border-color: #efc4c0; }
+    .control-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 20px; }
+    .control-side { display: grid; align-content: start; gap: 20px; }
+    .lcd[data-state="warning-empty"] { --state: var(--warning); }
+    .preview-shell {
+      min-height: 500px;
+      padding: 10px;
+      overflow: hidden;
+      background: #242a31;
+      border: 8px solid #3b424a;
+      border-radius: 24px;
+      box-shadow: 0 16px 38px rgba(19, 31, 45, .14);
+    }
+    .panel {
+      padding: 18px;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      box-shadow: 0 13px 30px rgba(19, 31, 45, .08);
+    }
+    .panel h2 { margin: 0 0 5px; font-size: 21px; }
+    .panel-note { margin: 0 0 15px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .room-editor { margin-bottom: 15px; padding: 13px; background: #f8fafc; border: 1px solid var(--line); border-radius: 13px; }
+    .room-editor label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .room-row { display: flex; gap: 7px; }
+    .room-row input { min-width: 0; flex: 1; padding: 10px; border: 1px solid #cfd6df; border-radius: 9px; outline: none; }
+    .room-row input:focus { border-color: var(--occupied); box-shadow: 0 0 0 3px rgba(23, 105, 170, .11); }
+    .buttons { display: grid; gap: 8px; }
+    button, .display-link {
+      padding: 11px 12px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #cfd6df;
+      border-radius: 11px;
+      cursor: pointer;
+      font-weight: 800;
+      text-align: left;
+      text-decoration: none;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    button:hover, .display-link:hover { transform: translateY(-1px); border-color: #8d99a8; }
+    button:focus-visible, .display-link:focus-visible { outline: 3px solid rgba(23, 105, 170, .25); outline-offset: 2px; }
+    button.selected { color: #fff; background: var(--occupied); border-color: var(--occupied); }
+    .save-room { flex: 0 0 auto; text-align: center; }
+    .secondary-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 13px; }
+    .auto-button, .display-link { text-align: center; background: #edf4fa; border-color: #b8d0e4; }
+    .hint { margin-top: 13px; padding-top: 12px; color: var(--muted); border-top: 1px solid var(--line); font-size: 12px; line-height: 1.55; }
+    .tts-buttons { display: grid; gap: 7px; }
+    .tts-buttons button { display: flex; align-items: center; gap: 9px; padding: 9px 11px; font-size: 13px; }
+    .tts-key {
+      flex: 0 0 auto;
+      width: 22px;
+      padding: 2px 0;
+      color: #fff;
+      background: #8d99a8;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 850;
+      text-align: center;
+    }
+    .tts-buttons button[data-level="danger"] .tts-key { background: #c0392b; }
+    .tts-buttons button[data-level="warning"] .tts-key { background: #c77b12; }
+    .tts-buttons button[data-level="emergency"] .tts-key { background: #8e1b1b; }
+    .tts-buttons button.playing { border-color: var(--occupied); box-shadow: 0 0 0 3px rgba(23, 105, 170, .13); }
+    .tts-clear { width: 100%; margin-top: 9px; background: #edf4fa; border-color: #b8d0e4; text-align: center; }
+    .tts-status {
+      margin-top: 13px;
+      padding-top: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .tts-status[data-tone="ok"] { color: #12623a; }
+    .tts-status[data-tone="error"] { color: #a33a32; }
+    #preview .metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    #preview .metric { padding-inline: clamp(12px, 1.4vw, 19px); }
+    #preview .metric-value {
+      overflow: visible;
+      font-size: clamp(21px, 2.5vw, 32px);
+      text-overflow: clip;
+    }
+    @media (max-width: 1180px) {
+      body { padding: 14px; }
+      .control-grid { grid-template-columns: 1fr; }
+      .preview-shell { min-height: min(540px, 70vh); }
+      .buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tts-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      .control-header { align-items: flex-start; flex-direction: column; }
+      .preview-shell { min-height: 480px; }
+      .buttons, .secondary-actions, .tts-buttons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="control-app">
+    <header class="control-header">
+      <div>
+        <h1>SafeNest LCD 제어</h1>
+        <p>노트북에서 선택한 상태가 Raspberry Pi LCD에 바로 표시됩니다.</p>
+      </div>
+      <span class="connection-status offline" id="connectionStatus">서버 확인 중</span>
+    </header>
+
+    <div class="control-grid">
+      <section class="preview-shell" aria-label="현재 LCD 화면 미리보기">
+        <div class="lcd" id="preview" data-state="normal-empty">
+          <header class="topbar">
+            <div class="brand"><span class="brand-mark"></span>SafeNest</div>
+            <div class="topbar-meta">
+              <span class="sensor-status" id="previewSensorStatus" data-status="live">센서 실시간</span>
+              <strong class="room-name" id="previewRoom">밀폐공간 A-01</strong>
+            </div>
+          </header>
+          <section class="emergency-banner" id="previewEmergencyBanner" data-phase="active" hidden>
+            <div class="emergency-banner-copy">
+              <strong id="previewEmergencyTitle">🚨 긴급 상황 — 작업자 상태를 즉시 확인하세요</strong>
+            </div>
+            <button class="emergency-confirm" id="previewEmergencyConfirm" type="button" disabled>확인</button>
+          </section>
+          <div class="main-state"><div>
+            <div class="status-pill" id="previewPill">정상 · 미재실</div>
+            <h2 class="state-title" id="previewTitle">정상</h2>
+            <p class="state-subtitle" id="previewSubtitle">감지된 사람이 없습니다</p>
+          </div></div>
+          <div class="metrics" id="previewMetrics"></div>
+          <div class="comment" id="previewComment">정상 모니터링 중입니다</div>
+        </div>
+      </section>
+
+      <div class="control-side">
+        <aside class="panel">
+          <h2>수동 화면 전환</h2>
+          <p class="panel-note">버튼 또는 키보드 숫자 1~6을 누르세요.</p>
+          <div class="room-editor">
+            <label for="roomInput">방·공간 이름</label>
+            <div class="room-row">
+              <input id="roomInput" type="text" maxlength="24" value="밀폐공간 A-01" />
+              <button class="save-room" id="saveRoom" type="button">적용</button>
+            </div>
+          </div>
+          <div class="buttons" id="buttons">
+            <button data-state="normal-empty" type="button">1. 정상 · 사람 없음</button>
+            <button data-state="normal-occupied" type="button">2. 정상 · 사람 있음</button>
+            <button data-state="warning" type="button">3. 주의 · CO₂ 높음</button>
+            <button data-state="danger" type="button">4. 위험 · 호흡 이상</button>
+            <button data-state="emergency" type="button">5. 긴급 · 복합 위험</button>
+            <button data-state="offline" type="button">6. 통신·센서 오류</button>
+            <button data-state="warning-empty" data-cue="n" type="button">7. 주의 · CO₂ 높음 · 사람 없음</button>
+          </div>
+          <div class="secondary-actions">
+            <button class="auto-button" id="autoButton" type="button">자동 순환 시작</button>
+            <a class="display-link" href="/display" target="_blank" rel="noopener">LCD 화면 열기</a>
+          </div>
+          <div class="hint">수동 선택 시 자동 순환은 즉시 중지됩니다. 마지막 상태와 공간 이름은 Raspberry Pi에 저장됩니다.</div>
+        </aside>
+
+        <section class="panel" aria-label="연출 음성 재생">
+          <h2>연출 음성</h2>
+          <p class="panel-note">버튼 또는 키보드 A~N을 누르면 LCD 문구가 바뀌고, Raspberry Pi 스피커로 경고음과 안내 음성이 재생됩니다.</p>
+          <div class="tts-buttons" id="ttsButtons">
+            <button data-tts="a" data-level="danger" type="button"><span class="tts-key">A</span>낙상 위험</button>
+            <button data-tts="b" data-level="danger" type="button"><span class="tts-key">B</span>무호흡 위험</button>
+            <button data-tts="c" data-level="danger" type="button"><span class="tts-key">C</span>CO₂ 위험</button>
+            <button data-tts="i" data-level="danger" type="button"><span class="tts-key">I</span>일반 위험</button>
+            <button data-tts="d" data-level="warning" type="button"><span class="tts-key">D</span>호흡 이상 주의</button>
+            <button data-tts="e" data-level="warning" type="button"><span class="tts-key">E</span>CO₂ 주의</button>
+            <button data-tts="f" data-level="warning" type="button"><span class="tts-key">F</span>장시간 무움직임 주의</button>
+            <button data-tts="g" data-level="warning" type="button"><span class="tts-key">G</span>열화상 이상 주의</button>
+            <button data-tts="h" data-level="warning" type="button"><span class="tts-key">H</span>일반 주의</button>
+            <button data-tts="n" data-level="warning" type="button"><span class="tts-key">N</span>CO₂ 주의 · 사람 없음</button>
+            <button data-tts="j" data-level="emergency" type="button"><span class="tts-key">J</span>긴급 · 낙상</button>
+            <button data-tts="k" data-level="emergency" type="button"><span class="tts-key">K</span>긴급 · 무호흡</button>
+            <button data-tts="l" data-level="emergency" type="button"><span class="tts-key">L</span>긴급 · CO₂ 중독</button>
+            <button data-tts="m" data-level="emergency" type="button"><span class="tts-key">M</span>긴급 · 복합 위험</button>
+          </div>
+          <button class="tts-clear" id="ttsClear" type="button">문구 해제 · 선택한 화면으로 되돌리기</button>
+          <div class="tts-status" id="ttsStatus" data-tone="idle">대기 중</div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const scenarios = {
+      "normal-empty": { pill: "정상 · 미재실", title: "정상", subtitle: "감지된 사람이 없습니다", metrics: [["CO₂ 수치", "620 ppm"], ["공간 온도", "24.3℃"], ["움직임 감지", "감지 안 됨"]], comment: "정상 모니터링 중입니다" },
+      "normal-occupied": { pill: "정상 · 재실", title: "안전", subtitle: "작업자의 움직임이 감지됩니다", metrics: [["CO₂ 수치", "820 ppm"], ["인체 표면온도", "36.7℃"], ["움직임 감지", "감지됨"]], comment: "안전 상태를 계속 확인합니다" },
+      warning: { pill: "환경 주의", title: "주의", subtitle: "CO₂ 농도가 높습니다", metrics: [["CO₂ 수치", "1,500 ppm"], ["공간 온도", "26.1℃"], ["움직임 감지", "감지됨"]], comment: "환기 후 작업자 상태를 확인하세요" },
+      "warning-empty": { pill: "환경 주의", title: "주의", subtitle: "CO₂ 농도가 높습니다", metrics: [["CO₂ 수치", "1,500 ppm"], ["공간 온도", "26.1℃"], ["움직임 감지", "감지 안 됨"]], comment: "환기 후 작업자 상태를 확인하세요" },
+      danger: { pill: "작업자 위험", title: "위험", subtitle: "무움직임과 호흡 이상 감지", metrics: [["CO₂ 수치", "980 ppm"], ["인체 표면온도", "37.2℃"], ["움직임 감지", "감지 안 됨"]], comment: "작업자의 상태를 즉시 확인하세요" },
+      emergency: { pill: "긴급 경보 작동 중", title: "긴급", subtitle: "고체온·호흡 이상·무움직임", metrics: [["CO₂ 수치", "1,240 ppm"], ["인체 표면온도", "39.1℃"], ["움직임 감지", "감지 안 됨"]], comment: "즉시 현장을 확인하고 구조를 요청하세요" },
+      offline: { pill: "시스템 점검 필요", title: "통신 오류", subtitle: "센서 데이터를 받을 수 없습니다", metrics: [["CO₂ 수치", "수신 안 됨"], ["온도", "수신 안 됨"], ["움직임 감지", "확인 불가"]], comment: "장비 전원과 센서 통신 연결을 확인하세요" }
+    };
+    const order = ["normal-empty", "normal-occupied", "warning", "danger", "emergency", "offline"];
+    const preview = document.getElementById("preview");
+    const previewRoom = document.getElementById("previewRoom");
+    const previewSensorStatus = document.getElementById("previewSensorStatus");
+    const previewEmergencyBanner = document.getElementById("previewEmergencyBanner");
+    const previewEmergencyTitle = document.getElementById("previewEmergencyTitle");
+    const previewEmergencyConfirm = document.getElementById("previewEmergencyConfirm");
+    const previewPill = document.getElementById("previewPill");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewSubtitle = document.getElementById("previewSubtitle");
+    const previewMetrics = document.getElementById("previewMetrics");
+    const previewComment = document.getElementById("previewComment");
+    const roomInput = document.getElementById("roomInput");
+    const connectionStatus = document.getElementById("connectionStatus");
+    const buttons = [...document.querySelectorAll("#buttons button[data-state]")];
+    const autoButton = document.getElementById("autoButton");
+    const ttsButtons = [...document.querySelectorAll("#ttsButtons button[data-tts]")];
+    const ttsStatus = document.getElementById("ttsStatus");
+    const ttsClear = document.getElementById("ttsClear");
+    let currentState = "normal-empty";
+    let autoTimer = null;
+    let ttsStatusTimer = null;
+    let ttsPlayingTimer = null;
+    let previewCue = null;
+
+    const showcaseBase = `${location.protocol}//${location.hostname}:8090`;
+    const showcaseTtsUrl = `${showcaseBase}/api/showcase/tts`;
+    const showcaseAlertUrl = `${showcaseBase}/api/showcase/alert`;
+    const showcaseTtsLabels = {
+      a: "낙상 위험",
+      b: "무호흡 위험",
+      c: "CO₂ 위험",
+      d: "호흡 이상 주의",
+      e: "CO₂ 주의",
+      f: "장시간 무움직임 주의",
+      g: "열화상 이상 주의",
+      h: "일반 주의",
+      i: "일반 위험",
+      j: "긴급 · 낙상",
+      k: "긴급 · 무호흡",
+      l: "긴급 · CO₂ 중독",
+      m: "긴급 · 복합 위험",
+      n: "CO₂ 주의 · 사람 없음"
+    };
+
+    function renderSensorStatus() {
+      const offline = currentState === "offline";
+      previewSensorStatus.dataset.status = offline ? "error" : "live";
+      previewSensorStatus.textContent = offline ? "통신 오류" : "센서 실시간";
+    }
+
+    function render(payload) {
+      currentState = payload.state in scenarios ? payload.state : "offline";
+      const cue = previewCue;
+      const shownState = cue && cue.state in scenarios ? cue.state : currentState;
+      const scenario = scenarios[shownState] || scenarios.offline;
+      preview.dataset.state = shownState;
+      previewRoom.textContent = payload.room || "밀폐공간 A-01";
+      roomInput.value = payload.room || "밀폐공간 A-01";
+      previewPill.textContent = cue ? cue.pill : scenario.pill;
+      previewTitle.textContent = cue ? cue.title : scenario.title;
+      previewSubtitle.textContent = cue ? cue.subtitle : scenario.subtitle;
+      previewComment.textContent = cue ? cue.comment : scenario.comment;
+      const emergency = payload.emergency || {};
+      const rawEmergency = currentState === "emergency" || emergency.active === true;
+      const recoveredEmergency = !rawEmergency && emergency.recovery_pending === true;
+      const activeEmergency = rawEmergency && emergency.acknowledged !== true;
+      previewEmergencyBanner.hidden = !(activeEmergency || recoveredEmergency);
+      preview.classList.toggle("has-alert-banner", activeEmergency || recoveredEmergency);
+      if (recoveredEmergency) {
+        previewEmergencyBanner.dataset.phase = "recovered";
+        previewEmergencyTitle.textContent = "✓ 센서 정상 복귀 — 정상 모니터링으로 전환되었습니다";
+        previewEmergencyConfirm.textContent = "종료 확인";
+      } else {
+        previewEmergencyBanner.dataset.phase = "active";
+        previewEmergencyTitle.textContent = "🚨 긴급 상황 — 작업자 상태를 즉시 확인하세요";
+        previewEmergencyConfirm.textContent = "확인";
+      }
+      renderSensorStatus();
+      previewMetrics.replaceChildren(...scenario.metrics.map(([label, value]) => {
+        const item = document.createElement("div");
+        item.className = "metric";
+        const labelElement = document.createElement("span");
+        labelElement.className = "metric-label";
+        labelElement.textContent = label;
+        const valueElement = document.createElement("strong");
+        valueElement.className = "metric-value";
+        valueElement.textContent = value;
+        item.append(labelElement, valueElement);
+        return item;
+      }));
+      buttons.forEach(button => {
+        const selected = button.dataset.state === shownState;
+        button.classList.toggle("selected", selected);
+        button.setAttribute("aria-pressed", String(selected));
+      });
+    }
+
+    function setConnected(connected) {
+      connectionStatus.textContent = connected ? "LCD 서버 연결됨" : "LCD 서버 연결 끊김";
+      connectionStatus.classList.toggle("offline", !connected);
+    }
+
+    async function getCue() {
+      try {
+        const response = await fetch(showcaseAlertUrl, { cache: "no-store" });
+        if (!response.ok) throw new Error("cue request failed");
+        const payload = await response.json();
+        previewCue = payload.active ? payload.alert : null;
+      } catch (error) {
+        previewCue = null;
+      }
+    }
+
+    async function setCue(key) {
+      try {
+        const response = await fetch(showcaseAlertUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key }),
+          cache: "no-store"
+        });
+        if (!response.ok) throw new Error("cue request failed");
+        const payload = await response.json();
+        previewCue = payload.active ? payload.alert : null;
+      } catch (error) {
+        previewCue = null;
+      }
+    }
+
+    async function clearCue() {
+      previewCue = null;
+      try {
+        await fetch(showcaseAlertUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ clear: true }),
+          cache: "no-store"
+        });
+      } catch (error) {
+      }
+    }
+
+    async function getState() {
+      await getCue();
+      try {
+        const response = await fetch("/api/state", { cache: "no-store" });
+        if (!response.ok) throw new Error("request failed");
+        render(await response.json());
+        setConnected(true);
+      } catch (error) {
+        setConnected(false);
+      }
+    }
+
+    async function updateState(change) {
+      if (change.state) await clearCue();
+      try {
+        const response = await fetch("/api/state", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(change)
+        });
+        if (!response.ok) throw new Error("update failed");
+        render(await response.json());
+        setConnected(true);
+      } catch (error) {
+        setConnected(false);
+      }
+    }
+
+    function stopAuto() {
+      clearInterval(autoTimer);
+      autoTimer = null;
+      autoButton.textContent = "자동 순환 시작";
+    }
+
+    function setTtsStatus(text, tone) {
+      ttsStatus.textContent = text;
+      ttsStatus.dataset.tone = tone;
+      clearTimeout(ttsStatusTimer);
+      ttsStatusTimer = setTimeout(() => {
+        ttsStatus.textContent = "대기 중";
+        ttsStatus.dataset.tone = "idle";
+      }, 4000);
+    }
+
+    async function triggerTts(key) {
+      const label = showcaseTtsLabels[key];
+      const button = ttsButtons.find(candidate => candidate.dataset.tts === key);
+      ttsButtons.forEach(candidate => candidate.classList.remove("playing"));
+      clearTimeout(ttsPlayingTimer);
+      try {
+        const response = await fetch(showcaseTtsUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ key, state: currentState }),
+          cache: "no-store"
+        });
+        if (!response.ok) throw new Error("showcase TTS request failed");
+        const result = await response.json();
+        if (result && result.alert) previewCue = result.alert;
+        setTtsStatus(`재생 중 · ${key.toUpperCase()} ${label}`, "ok");
+        if (button) {
+          button.classList.add("playing");
+          ttsPlayingTimer = setTimeout(() => button.classList.remove("playing"), 4000);
+        }
+      } catch (error) {
+        setTtsStatus("재생 실패 — showcase 서버(8090)를 확인하세요", "error");
+      }
+    }
+
+    ttsButtons.forEach(button => button.addEventListener("click", () => triggerTts(button.dataset.tts)));
+
+    ttsClear.addEventListener("click", async () => {
+      ttsButtons.forEach(button => button.classList.remove("playing"));
+      await clearCue();
+      setTtsStatus("문구 해제됨", "ok");
+    });
+
+    buttons.forEach(button => button.addEventListener("click", async () => {
+      stopAuto();
+      if (button.dataset.cue) {
+        await updateState({ state: "warning" });
+        await setCue(button.dataset.cue);
+        return;
+      }
+      updateState({ state: button.dataset.state });
+    }));
+    document.getElementById("saveRoom").addEventListener("click", () => updateState({ room: roomInput.value }));
+    roomInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") updateState({ room: roomInput.value });
+    });
+    autoButton.addEventListener("click", () => {
+      if (autoTimer) return stopAuto();
+      autoButton.textContent = "자동 순환 중지";
+      autoTimer = setInterval(() => {
+        const next = (order.indexOf(currentState) + 1) % order.length;
+        updateState({ state: order[next] });
+      }, 3000);
+    });
+    document.addEventListener("keydown", event => {
+      if (event.target === roomInput) return;
+      if (event.repeat || event.ctrlKey || event.altKey || event.metaKey) return;
+      const physicalKey = /^Key[A-N]$/.test(event.code)
+        ? event.code.slice(3).toLowerCase()
+        : "";
+      const ttsKey = physicalKey || event.key.toLowerCase();
+      if (ttsKey in showcaseTtsLabels) {
+        event.preventDefault();
+        triggerTts(ttsKey);
+        return;
+      }
+      const index = Number(event.key) - 1;
+      if (index >= 0 && index < buttons.length) {
+        buttons[index].click();
+      }
+    });
+
+    getState();
+    setInterval(getState, 1500);
+  </script>
+</body>
+</html>

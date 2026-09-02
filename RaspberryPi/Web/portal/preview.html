@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeNest 통합 안전관제</title>
+  <script src="/vendor/chart.js/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #f2f5f9;
+      --surface: #ffffff;
+      --surface-2: #f7f9fc;
+      --ink: #182235;
+      --muted: #6c7a91;
+      --line: #dfe6ef;
+      --navy: #0f2442;
+      --blue: #2c75da;
+      --green: #16a36f;
+      --amber: #e89a12;
+      --orange: #e56d24;
+      --red: #e54858;
+      --gray: #7b8798;
+      --shadow: 0 12px 32px rgba(31, 53, 84, .08);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: Pretendard, "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+
+    .layout {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+    }
+
+    aside {
+      height: 100vh;
+      padding: 24px 18px;
+      position: sticky;
+      top: 0;
+      color: #fff;
+      background: var(--navy);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 30px;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      position: relative;
+      border: 3px solid #33d199;
+      border-radius: 50%;
+    }
+
+    .brand-mark::after {
+      content: "";
+      width: 11px;
+      height: 11px;
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #33d199;
+      border-radius: 50%;
+    }
+
+    nav { display: grid; gap: 8px; }
+    nav button {
+      padding: 11px 12px;
+      color: #b9c8db;
+      background: transparent;
+      border: 0;
+      border-radius: 10px;
+      text-align: left;
+      font-weight: 750;
+    }
+
+    nav button.active,
+    nav button:hover {
+      color: #fff;
+      background: rgba(255,255,255,.10);
+    }
+
+    main { min-width: 0; }
+    .main-header {
+      min-height: 76px;
+      padding: 14px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .header-title h1 { margin: 0; font-size: 21px; }
+    .header-title p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
+    .header-actions { display: flex; align-items: center; gap: 10px; }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      color: var(--green);
+      background: #eaf8f2;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 850;
+    }
+
+    .status-chip::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      background: currentColor;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(22,163,111,.55);
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+    .content { padding: 22px; display: grid; gap: 18px; }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-head h2 { margin: 0; font-size: 23px; }
+    .section-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .alert-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 17px 19px;
+      color: #8d1f2d;
+      background: #fff0f2;
+      border: 1px solid #f3b9c0;
+      border-radius: 15px;
+    }
+
+    .alert-banner.show { display: flex; }
+    .alert-banner.warning { color: #815200; background: #fff7e5; border-color: #f2d49a; }
+    .alert-banner.offline { color: #465264; background: #f0f3f7; border-color: #cdd5df; }
+    .alert-banner strong { display: block; font-size: 17px; }
+    .alert-banner span { display: block; margin-top: 3px; font-size: 13px; }
+    .alert-banner button {
+      padding: 9px 12px;
+      color: #fff;
+      background: var(--red);
+      border: 0;
+      border-radius: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .secondary-button {
+      padding: 8px 11px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      font-weight: 800;
+    }
+
+    .secondary-button:hover { border-color: #9eb0c6; }
+
+    .overview {
+      display: grid;
+      grid-template-columns: 1.2fr repeat(5, minmax(0, .8fr));
+      gap: 14px;
+    }
+
+    .state-card {
+      min-height: 168px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #fff;
+      background: linear-gradient(135deg, #102744, #184978);
+    }
+
+    .state-card .eyebrow { color: #b9d4f2; font-size: 12px; font-weight: 850; }
+    .state-card h2 { margin: 6px 0 0; font-size: 28px; }
+    .state-card p { margin: 5px 0 0; color: #dbe9f7; font-size: 13px; }
+    .risk-row { display: flex; align-items: end; justify-content: space-between; gap: 12px; }
+    .risk-score { font-size: 34px; font-weight: 900; }
+
+    .risk-badge {
+      padding: 7px 10px;
+      color: #70e5ba;
+      background: rgba(49,209,153,.16);
+      border: 1px solid rgba(49,209,153,.45);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .metric-card { padding: 17px; }
+    .metric-card .label { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .metric-card .value { margin-top: 9px; font-size: 26px; font-weight: 900; }
+    .metric-card .foot { margin-top: 7px; color: var(--green); font-size: 12px; font-weight: 750; }
+    .metric-card.warning .foot { color: var(--amber); }
+    .metric-card.danger .foot { color: var(--red); }
+    .metric-card.offline .foot { color: var(--gray); }
+
+    .middle,
+    .lower {
+      display: grid;
+      grid-template-columns: 1.35fr .85fr;
+      gap: 18px;
+    }
+
+    .panel { padding: 18px; }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .panel-head h3 { margin: 0; font-size: 17px; }
+    .panel-head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
+
+    .thermal {
+      height: 350px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #2d3746, #465264);
+      border-radius: 14px;
+    }
+
+    .thermal canvas { width:100%; height:100%; display:block; position:absolute; inset:0; z-index:1; }
+    .thermal.no-data { filter: grayscale(1); }
+
+    .thermal .overlay {
+      position: absolute;
+      inset: auto 14px 14px 14px;
+      padding: 10px 12px;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #fff;
+      background: rgba(5,10,20,.62);
+      border-radius: 10px;
+      font-size: 12px;
+      backdrop-filter: blur(8px);
+      z-index: 2;
+    }
+
+    .fusion-list { display: grid; gap: 10px; }
+    .fusion-item {
+      padding: 13px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--surface-2);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+    }
+
+    .fusion-item span { color: var(--muted); font-size: 13px; }
+    .fusion-item strong { color: var(--green); font-size: 13px; }
+
+    .risk-box {
+      margin-top: 14px;
+      padding: 17px;
+      color: #fff;
+      background: linear-gradient(135deg, #1f4f89, #193d6b);
+      border-radius: 14px;
+    }
+
+    .risk-box small { color: #c9dbef; }
+    .risk-box strong { display: block; margin-top: 6px; font-size: 31px; }
+    .chart-wrap { height: 300px; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 11px 9px; text-align: left; border-bottom: 1px solid var(--line); }
+    th { color: var(--muted); background: #fbfcfe; font-size: 12px; }
+    tbody tr:hover { background: #fafcff; }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .badge.ok { color: var(--green); background: #e9f7f1; }
+    .badge.warn { color: #9b6500; background: #fff3d8; }
+    .badge.danger { color: #b14612; background: #fff0e8; }
+    .badge.emergency { color: #a82434; background: #ffedf0; }
+    .badge.offline { color: #586474; background: #edf1f5; }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card { padding: 16px; }
+    .summary-card span { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .summary-card strong { display: block; margin-top: 7px; font-size: 28px; }
+
+    .space-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px;
+    }
+
+    .space-card {
+      padding: 18px;
+      transition: transform .16s ease, border-color .16s ease;
+    }
+
+    .space-card:hover { transform: translateY(-2px); border-color: #b8c6d7; }
+    .space-card-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .space-card h3 { margin: 0; font-size: 17px; }
+    .space-card .node { margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .space-score { margin: 20px 0 15px; }
+    .space-score-row { display: flex; align-items: end; justify-content: space-between; gap: 10px; }
+    .space-score-row strong { font-size: 30px; }
+    .space-score-row span { color: var(--muted); font-size: 12px; }
+    .risk-track { height: 8px; margin-top: 9px; overflow: hidden; background: #edf1f5; border-radius: 999px; }
+    .risk-fill { height: 100%; background: var(--green); border-radius: inherit; }
+    .risk-fill.warn { background: var(--amber); }
+    .risk-fill.danger { background: var(--orange); }
+    .risk-fill.emergency { background: var(--red); }
+    .risk-fill.offline { background: var(--gray); }
+    .space-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .space-metric { padding: 10px; background: var(--surface-2); border-radius: 10px; }
+    .space-metric span { display: block; color: var(--muted); font-size: 10px; font-weight: 750; }
+    .space-metric strong { display: block; margin-top: 4px; font-size: 13px; }
+    .space-foot { margin-top: 13px; display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; }
+
+    .filter-bar {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1.1fr .8fr 1.6fr auto;
+      gap: 10px;
+    }
+
+    .field { display: grid; gap: 6px; }
+    .field label { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .field input,
+    .field select {
+      width: 100%;
+      padding: 10px 11px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid #cfd8e4;
+      border-radius: 9px;
+      outline: 0;
+    }
+
+    .field input:focus,
+    .field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(44,117,218,.10); }
+    .filter-actions { display: flex; align-items: end; }
+    .event-panel { padding: 0; overflow: hidden; }
+    .event-panel .panel-head { padding: 18px 18px 0; }
+    .table-scroll { overflow: auto; }
+    .empty-state { padding: 34px; color: var(--muted); text-align: center; }
+
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .settings-card { padding: 19px; }
+    .settings-card h3 { margin: 0; font-size: 17px; }
+    .settings-card > p { margin: 5px 0 17px; color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .form-grid .wide { grid-column: 1 / -1; }
+    .primary-button {
+      padding: 10px 14px;
+      color: #fff;
+      background: var(--navy);
+      border: 0;
+      border-radius: 9px;
+      font-weight: 850;
+    }
+
+    .button-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; }
+    .connection-result { min-height: 19px; margin-top: 10px; color: var(--muted); font-size: 12px; }
+    .connection-result.success { color: var(--green); }
+    .connection-result.error { color: var(--red); }
+
+    .check-list { display: grid; gap: 11px; }
+    .check-row {
+      padding: 11px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--surface-2);
+      border-radius: 10px;
+    }
+
+    .check-row label { font-size: 13px; font-weight: 750; }
+    .check-row input { width: 18px; height: 18px; accent-color: var(--blue); }
+    .registered-list { grid-column: 1 / -1; }
+    .danger-button { padding: 7px 10px; color: var(--red); background: #fff; border: 1px solid #f0b8c0; border-radius: 8px; font-weight: 800; }
+
+    .toast {
+      max-width: min(380px, calc(100vw - 32px));
+      padding: 12px 16px;
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 40;
+      color: #fff;
+      background: var(--navy);
+      border-radius: 11px;
+      box-shadow: 0 14px 34px rgba(15,36,66,.25);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: .2s ease;
+      font-size: 13px;
+      font-weight: 750;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    body.auth-pending .layout { display: none; }
+    body:not(.auth-pending) .login-screen { display: none; }
+    .login-screen {
+      min-height: 100vh;
+      padding: 24px;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at top right, #dceafb 0, transparent 38%), var(--bg);
+    }
+    .login-card { width: min(420px, 100%); padding: 38px; }
+    .login-brand { display:flex; align-items:center; gap:10px; color:var(--navy); font-size:24px; font-weight:900; }
+    .login-card h1 { margin:28px 0 8px; font-size:28px; }
+    .login-card > p { margin:0 0 24px; color:var(--muted); line-height:1.6; }
+    .login-card .field { margin-top:16px; }
+    .login-card input { width:100%; }
+    .login-card .primary-button { width:100%; margin-top:24px; padding:13px; }
+    .login-error { min-height:20px; margin-top:12px; color:var(--red); font-size:13px; }
+
+    @media (max-width: 1180px) {
+      .overview { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .state-card { grid-column: span 2; }
+      .middle, .lower { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(3, 1fr); }
+      .space-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { height: auto; padding: 15px; position: static; }
+      .brand { margin-bottom: 13px; }
+      nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      nav button { text-align: center; }
+      .main-header { position: static; }
+      .space-grid { grid-template-columns: 1fr; }
+      .settings-grid { grid-template-columns: 1fr; }
+      .filter-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 620px) {
+      nav { grid-template-columns: repeat(2, 1fr); }
+      .main-header { align-items: flex-start; flex-direction: column; }
+      .content { padding: 14px; }
+      .overview, .summary-grid { grid-template-columns: 1fr; }
+      .state-card { grid-column: auto; }
+      .form-grid, .filter-bar { grid-template-columns: 1fr; }
+      .form-grid .wide { grid-column: auto; }
+      .thermal { height: 270px; }
+      .alert-banner { align-items: flex-start; flex-direction: column; }
+    }
+  </style>
+</head>
+<body class="auth-pending">
+  <section class="login-screen" aria-labelledby="loginTitle">
+    <form class="card login-card" id="adminLoginForm">
+      <div class="login-brand"><span class="brand-mark"></span>SafeNest</div>
+      <h1 id="loginTitle">관리자 로그인</h1>
+      <p>공간과 센서 노드를 관리하려면 로그인하세요.</p>
+      <div class="field"><label for="adminLoginId">관리자 ID</label><input id="adminLoginId" autocomplete="username" required /></div>
+      <div class="field"><label for="adminLoginPassword">비밀번호</label><input id="adminLoginPassword" type="password" autocomplete="current-password" required /></div>
+      <button class="primary-button" id="adminLoginButton" type="submit">로그인</button>
+      <div class="login-error" id="adminLoginError" role="alert"></div>
+    </form>
+  </section>
+  <div class="layout">
+    <aside>
+      <div class="brand"><span class="brand-mark"></span>SafeNest</div>
+      <nav aria-label="주요 메뉴">
+        <button class="active" data-view="dashboard">통합 대시보드</button>
+        <button data-view="spaces">공간 관리</button>
+        <button data-view="events">이벤트 로그</button>
+        <button data-view="settings">설정</button>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="main-header">
+        <div class="header-title">
+          <h1 id="pageTitle">밀폐공간 통합 안전관제</h1>
+          <p id="pageDescription">현재 공간의 센서 융합 상태를 실시간으로 확인합니다.</p>
+        </div>
+        <div class="header-actions"><div class="status-chip" id="globalConnection">공간 확인 중</div></div>
+      </header>
+
+      <section class="view active" data-view-panel="dashboard">
+        <div class="content">
+          <div class="alert-banner" id="alertBanner">
+            <div><strong id="alertTitle">수신 대기</strong><span id="alertDetail">데이터 수신 대기 중</span></div>
+          </div>
+
+          <div class="overview">
+            <article class="card state-card">
+              <div>
+                <div class="eyebrow">현재 공간 · <span class="current-room-name">데이터 수신 대기</span></div>
+                <h2 id="presenceText">수신 대기</h2>
+                <p id="presenceSub">수신 대기</p>
+              </div>
+              <div class="risk-row">
+                <div><small>통합 위험점수</small><div class="risk-score" id="riskScore">수신 대기</div></div>
+                <span class="risk-badge" id="riskBadge">수신 대기</span>
+              </div>
+            </article>
+
+            <article class="card metric-card" id="breathCard">
+              <div class="label">mmWave 호흡수</div><div class="value" id="breathValue">수신 대기</div><div class="foot" id="breathFoot">수신 대기</div>
+            </article>
+            <article class="card metric-card" id="heartCard">
+              <div class="label">mmWave 심박수</div><div class="value" id="heartValue">수신 대기</div><div class="foot" id="heartFoot">수신 대기</div>
+            </article>
+            <article class="card metric-card" id="tempCard">
+              <div class="label" id="tempLabel">인체 표면온도</div><div class="value" id="tempValue">수신 대기</div><div class="foot" id="tempFoot">수신 대기</div>
+            </article>
+            <article class="card metric-card" id="co2Card">
+              <div class="label">CO₂ 농도</div><div class="value" id="co2Value">수신 대기</div><div class="foot" id="co2Foot">수신 대기</div>
+            </article>
+            <article class="card metric-card" id="motionCard">
+              <div class="label">PIR 움직임 상태</div><div class="value" id="motionValue">수신 대기</div><div class="foot" id="motionFoot">수신 대기</div>
+            </article>
+          </div>
+
+          <div class="middle">
+            <article class="card panel">
+              <div class="panel-head">
+                <div><h3>실시간 열화상</h3><p>비식별 열화상 데이터로 개인정보를 보호합니다.</p></div>
+                <strong id="thermalMax">수신 대기</strong>
+              </div>
+              <div class="thermal" id="thermalPanel">
+                <canvas id="thermalCanvas" width="800" height="620" aria-label="실시간 열화상"></canvas>
+                <div class="overlay"><span id="thermalMatch">수신 대기</span><span id="thermalAverage">수신 대기</span><span id="thermalFps">수신 대기</span></div>
+              </div>
+            </article>
+
+            <article class="card panel">
+              <div class="panel-head"><div><h3>센서 융합 판단</h3><p>다중 센서 교차검증 결과</p></div></div>
+              <div class="fusion-list">
+                <div class="fusion-item"><span>mmWave 재실·호흡</span><strong id="fusionMmwave">수신 대기</strong></div>
+                <div class="fusion-item"><span>열화상 인체 영역</span><strong id="fusionThermal">수신 대기</strong></div>
+                <div class="fusion-item"><span>PIR 움직임</span><strong id="fusionMotion">수신 대기</strong></div>
+                <div class="fusion-item"><span>CO₂ 환경 상태</span><strong id="fusionCo2">수신 대기</strong></div>
+              </div>
+              <div class="risk-box"><small>센서 종합 신뢰도</small><strong id="confidenceValue">수신 대기</strong><span id="confidenceText">수신 대기</span></div>
+            </article>
+          </div>
+
+          <div class="lower">
+            <article class="card panel">
+              <div class="panel-head"><div><h3>최근 센서 추이</h3><p id="trendStatus">데이터 수신 대기</p></div></div>
+              <div class="chart-wrap"><canvas id="trendChart"></canvas></div>
+            </article>
+            <article class="card panel">
+              <div class="panel-head"><div><h3>최근 이벤트</h3><p>가장 최근에 발생한 이벤트 3건</p></div><button class="secondary-button" data-go-view="events" type="button">전체 보기</button></div>
+              <div class="table-scroll"><table><thead><tr><th>시간</th><th>등급</th><th>내용</th></tr></thead><tbody id="recentEventTable"></tbody></table></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="spaces">
+        <div class="content">
+          <div class="section-head"><div><h2>공간 관리</h2><p>등록된 모든 공간의 위험점수와 핵심 센서를 한눈에 비교합니다.</p></div><button class="primary-button" data-go-view="settings" type="button">새 공간 연결</button></div>
+          <div class="summary-grid" id="spaceSummary"></div>
+          <div class="space-grid" id="spaceGrid"></div>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="events">
+        <div class="content">
+          <div class="section-head"><div><h2>전체 이벤트 로그</h2><p>최근 3건뿐 아니라 저장된 이전 이벤트를 모두 조회할 수 있습니다.</p></div></div>
+          <div class="card filter-bar">
+            <div class="field"><label for="eventSpaceFilter">공간</label><select id="eventSpaceFilter"><option value="all">전체 공간</option></select></div>
+            <div class="field"><label for="eventLevelFilter">등급</label><select id="eventLevelFilter"><option value="all">전체 등급</option><option value="normal">정상</option><option value="info">정보</option><option value="warning">주의</option><option value="danger">위험</option><option value="emergency">긴급</option><option value="offline">통신 오류</option></select></div>
+            <div class="field"><label for="eventSearch">내용 검색</label><input id="eventSearch" type="search" placeholder="검색어 입력" /></div>
+            <div class="filter-actions"><button class="secondary-button" id="clearEventFilters" type="button">필터 초기화</button></div>
+          </div>
+          <article class="card event-panel">
+            <div class="panel-head"><div><h3>저장된 이벤트</h3><p id="eventCount">전체 0건</p></div></div>
+            <div class="table-scroll">
+              <table class="event-table"><thead><tr><th>일시</th><th>공간</th><th>등급</th><th>이벤트 내용</th><th>센서 요약</th></tr></thead><tbody id="allEventTable"></tbody></table>
+              <div class="empty-state" id="eventEmpty" hidden>조건에 맞는 이벤트가 없습니다.</div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="view" data-view-panel="settings">
+        <div class="content">
+          <div class="section-head"><div><h2>설정</h2><p>Raspberry Pi 공간 연결과 관리용 이름을 관리합니다.</p></div></div>
+          <div class="settings-grid">
+            <article class="card settings-card">
+              <h3>새 Raspberry Pi 공간 연결</h3>
+              <p>같은 네트워크의 SafeNest 게이트웨이 정보를 입력합니다. 등록된 공간은 공간 관리에 자동으로 표시됩니다.</p>
+              <form id="connectionForm">
+                <div class="form-grid">
+                  <div class="field"><label for="newSpaceName">공간 이름</label><input id="newSpaceName" required placeholder="공간 이름 입력" /></div>
+                  <div class="field"><label for="newNodeId">센서 노드 ID</label><input id="newNodeId" required placeholder="센서 노드 ID 입력" /></div>
+                  <div class="field"><label for="newHost">Raspberry Pi 주소</label><input id="newHost" required inputmode="url" placeholder="호스트 또는 IP 주소 입력" /></div>
+                  <div class="field"><label for="newPort">API 포트</label><input id="newPort" required inputmode="numeric" value="8000" /></div>
+                  <div class="field wide"><label for="healthPath">연결 확인 경로</label><input id="healthPath" value="/health" /></div>
+                </div>
+                <div class="button-row"><button class="secondary-button" id="testConnectionBtn" type="button">연결 테스트</button><button class="primary-button" type="submit">공간 등록</button></div>
+                <div class="connection-result" id="connectionResult">연결 테스트는 입력한 주소의 상태 응답을 확인합니다.</div>
+              </form>
+            </article>
+
+            <article class="card settings-card">
+              <h3>공간 이름 변경</h3>
+              <p>통합 대시보드에서 표시할 현재 공간을 선택하고 관리용 이름을 수정합니다.</p>
+              <div class="form-grid">
+                <div class="field wide"><label for="renameSpaceSelect">대상 공간</label><select id="renameSpaceSelect"></select></div>
+                <div class="field wide"><label for="renameSpaceInput">새 공간 이름</label><input id="renameSpaceInput" maxlength="32" /></div>
+              </div>
+              <div class="button-row"><button class="primary-button" id="renameSpaceBtn" type="button">이름 저장</button><button class="secondary-button" id="setCurrentSpaceBtn" type="button">통합 대시보드에 표시</button></div>
+            </article>
+
+            <article class="card settings-card registered-list">
+              <div class="panel-head"><div><h3>등록된 Raspberry Pi 공간</h3><p>게이트웨이 주소와 현재 연결 상태를 관리합니다.</p></div></div>
+              <div class="table-scroll"><table><thead><tr><th>공간</th><th>노드 ID</th><th>주소</th><th>상태</th><th>관리</th></tr></thead><tbody id="registeredSpaceTable"></tbody></table></div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="./thermal-client.js"></script>
+  <script src="./admin-api.js"></script>
+</body>
+</html>

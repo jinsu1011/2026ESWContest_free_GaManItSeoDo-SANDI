@@ -1,0 +1,65 @@
+{
+  "classification": "INTEGRATION_B_STAGE_ARTIFACT_INVENTORY",
+  "not_a_production_model_manifest": true,
+  "production_selection_changed": true,
+  "artifacts": [
+    {
+      "path": "sources/ondevice_ai/models/co2/co2_occupancy_int8_v0.1.0.tflite",
+      "classification": [
+        "HISTORICAL",
+        "NOT_PRODUCTION_DEFAULT",
+        "SUPERSEDED_BY_C_B6_REDUCED_FEATURE"
+      ],
+      "notes": "historical v0.1.0 != latest B-stage; production model_manifest.json still selects this file"
+    },
+    {
+      "path": "sources/ondevice_ai/models/rp_x0_b_complete/co2/C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001_full_integer_int8.tflite",
+      "classification": [
+        "LOCKED_B_STAGE",
+        "PRODUCTION_SELECTED",
+        "ACTIVE_C_B6",
+        "OCCUPANCY_ONLY_RISK_SEMANTIC_NONE"
+      ],
+      "candidate_id": "C_B6_REDUCED_CO2_SLOPE_CANDIDATE_001"
+    },
+    {
+      "path": "sources/ondevice_ai/models/thermal/thermal_fall_int8_v0.1.0.tflite",
+      "classification": [
+        "HISTORICAL",
+        "PRODUCTION_SELECTED"
+      ],
+      "notes": "do not substitute as T-B5"
+    },
+    {
+      "path": "sources/ondevice_ai/models/rp_x0_b_complete/thermal/SMALL_CNN_BASELINE_V1_P1_full_int8.tflite",
+      "classification": [
+        "LOCKED_B_STAGE",
+        "NOT_PRODUCTION_DEFAULT",
+        "NOT_THERMAL44_DEPLOYMENT_VALIDATED",
+        "DIAGNOSTIC_ONLY"
+      ],
+      "candidate_id": "FULL_INT8",
+      "architecture": "SMALL_CNN_BASELINE_V1"
+    },
+    {
+      "path": "sources/ondevice_ai/models/mmwave/mmwave_resp_int8_v0.1.0.tflite",
+      "classification": [
+        "HISTORICAL",
+        "PRODUCTION_SELECTED",
+        "RELEASE_BLOCKED"
+      ],
+      "notes": "production manifest deployment_allowed=false due to CLASS_COLLAPSE_ON_REPOSITORY_NPZ"
+    },
+    {
+      "path": "sources/ondevice_ai/models/rp_x0_b_complete/mmwave/M-B3_CONV1D_GAP_BASELINE_seed42_M-B5_CAL_CLASS_BALANCED_120_int8.tflite",
+      "classification": [
+        "LOCKED_B_STAGE",
+        "NOT_PRODUCTION_DEFAULT",
+        "LIVE_B_GATE_CLOSED"
+      ],
+      "candidate_id": "M-B3_CONV1D_GAP_BASELINE_seed42_M-B5_CAL_CLASS_BALANCED_120",
+      "notes": "artifact available != live mmWave deployment approved"
+    }
+  ],
+  "production_selection_change_scope": "CO2_ONLY_C_B6_REDUCED_FEATURE"
+}

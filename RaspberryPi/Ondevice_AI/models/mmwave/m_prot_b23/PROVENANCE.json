@@ -1,0 +1,24 @@
+{
+  "schema": "M_PROT_5B_ASSET_PROVENANCE_V1",
+  "SOURCE_REPO": "https://github.com/sheepmeat/test.git",
+  "SOURCE_SHA": "809b78626b442f146eccd73595f239b93de3ae2e",
+  "SOURCE_PHASE": "M-PROT-5A COMPLETE",
+  "SOURCE_HANDOFF": "datasets/mmwave/manifests/M_PROT_5A_predeployment_closure/predeployment_handoff.json",
+  "TARGET_REPO": "https://github.com/jinsu1011/safenest-embedded-competition",
+  "TARGET_BASE_SHA": "aea6083ef2dd6fea8d8e911ebec8dcdc2e3e89e9",
+  "artifact": {
+    "team_path": "RaspberryPi/Ondevice_AI/models/mmwave/m_prot_b23/candidate_seed_23.pt",
+    "source_path": "models/mmwave/m_pv2/family_b/candidate_seed_23.pt",
+    "sha256": "8f7de6f50d6ff62ff9b0ebfaed0b1fccd8d194c7e33781bc5b93366fae251a2c",
+    "parameter_sha256": "6db949c242e25888dd20c3fc8e2305af03448aa229e3ca73e4159216a266d78e"
+  },
+  "scaler": {
+    "team_path": "RaspberryPi/Ondevice_AI/models/mmwave/m_prot_b23/scaler_statistics.json",
+    "source_path": "datasets/mmwave/manifests/M-PV2_candidate_training/scaler_statistics.json",
+    "content_sha256": "5a2583b5b5064be5480b0cf56f2a2c12d40a4a2d005eb087dc8e12106881159c",
+    "file_sha256": "9555c8c954078b80e26fbcd3bc5d5a70b9a2e04620946118709ec95418b2ac36"
+  },
+  "MODEL_CHANGED": false,
+  "SCALER_CHANGED": false,
+  "LIVE_PI_EXECUTED": false
+}
