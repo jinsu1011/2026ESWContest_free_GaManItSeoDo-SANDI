@@ -86,6 +86,10 @@ MI48xx    (열화상)   ┘                 │
 | 표시 | Raspberry Pi 연결 LCD (Chromium 키오스크) | — |
 | 경보 | 부저(GPIO), 스피커 | — |
 
+![ESP32 센서 노드 배선도](final-report/assets/hw_node_final.png)
+
+> ESP32 센서 노드 배선도 (Fritzing). 핀 번호는 위 표 및 [`esp32_sensor_node.ino`](ESP32/Arduino/esp32_sensor_node/esp32_sensor_node.ino) 와 동일하다.
+
 외함 STL 과 설계 사양은 [`hardware/3d_models/`](hardware/3d_models/) 에 있다.
 
 ---
