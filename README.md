@@ -8,7 +8,7 @@
 |---|---|
 | ![LCD 위험 상태](final-report/assets/ui_lcd_4_danger.jpg) | ![웹 대시보드](final-report/assets/ui_web.png) |
 
-🎬 **[시연 영상 보기](https://www.youtube.com/watch?v=oW6j0GYJTvA)** — SafeNest 동작 시연 (약 O분)
+🎬 **[시연 영상 보기](https://www.youtube.com/watch?v=oW6j0GYJTvA)** — SafeNest 동작 시연 (약 3분)
 
 ---
 
