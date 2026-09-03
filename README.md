@@ -416,9 +416,8 @@ python3 RaspberryPi/Runtime/deployment/verify_bundle.py
 - **LCD legacy state 매핑 테스트 실패** — `test_legacy_lcd_state_mapping` 1건이 `runtime_status` 를 기대해 실패한다. 팀 운영 저장소 동일 리비전에서도 같은 실패가 재현되는 상류 기존 이슈이며, 위 O4 미구현과 같은 원인이다.
 - **preflight 모델 해시 검사 개수 불일치** — `test_hil_criteria` 가 6개를 기대하지만 manifest 에 10개 항목이 있어 실패한다. 실제 해시 검증은 10개 모두 통과한다.
 - **Thermal 모델의 낙상 판정은 proxy** — 공개 데이터 기반 자세 분류이며, 실제 낙상 이벤트와 MI48xx 하드웨어 도메인에서 검증되지 않았다. 단독 비상 선언 권한이 없다.
-- **mmWave B23 위험도 기여 유보** — mmWave 센서의 관찰 범위가 최대 1.5m인 점을 감안하여 prototype freeze 단계로 위험도 산출에 정식 반영되지 않는다.
-
-
+- **mmWave 신경망 출력은 관측 전용** — mmWave 채널 자체는 가중치 0.25 로 위험도에 반영되고, 점수는 규칙 기반 호흡수 판정(10–24 rpm 정상대)이 만든다. 점수에 쓰지 않는 것은 신경망 출력뿐이며(`mmwave.neural_trust: OBSERVE_ONLY`), 사유는 실센서 도메인 검증 미완료다. 관찰 범위 1.5 m 는 프로토타입 검증 조건이고 최대 감지 거리가 아니다 — 상용 등급 센서 채택 시 확대 가능하다.
+  
 ---
 
 ## License / External Sources
