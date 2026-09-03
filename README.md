@@ -426,3 +426,12 @@ python3 RaspberryPi/Runtime/deployment/verify_bundle.py
 - **UCI Occupancy Detection Dataset** — 원 배포처 조건
 
 저장소 구성요소별 경로·역할·분류는 [`COMPONENT_SOURCES.json`](COMPONENT_SOURCES.json) 참고.
+
+## 제작자
+
+- 팀장 : 경희대학교 전자공학과 김진수
+- 팀원 : 경희대학교 전자공학과 강유나
+- 팀원 : 경희대학교 전자공학과 김태균
+- 팀원 : 경희대학교 전자공학과 유승하
+- 팀원 : 경희대학교 전자공학과 한준우
+
