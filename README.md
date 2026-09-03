@@ -2,7 +2,7 @@
 
 밀폐공간 작업자의 **호흡·움직임·자세**와 **공기질**을 동시에 감시해, 위험을 스스로 알릴 수 없는 상태가 되기 전에 경보하는 임베디드 안전 모니터링 시스템.
 
-![SafeNest 완제품](final-report/assets/hw_product_full.jpg)
+![SafeNest 완제품](final-report/assets/hw_product_final.jpg)
 
 | 현장 LCD 패널 | 관제 웹 대시보드 |
 |---|---|
