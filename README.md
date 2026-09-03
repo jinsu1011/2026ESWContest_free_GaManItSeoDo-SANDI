@@ -131,7 +131,7 @@ MI48xx    (열화상)   ┘                 │
 │   └── LCD/static/      ★ display.html · common.css
 │
 ├── hardware/            3D 하우징 STL 및 설계 사양
-└── final-report/        대회 개발완료보고서 PDF/PPTX 및 이미지 자산
+└── final-report/        대회 개발완료보고서 PDF 및 이미지 자산
 ```
 
 ---
@@ -431,6 +431,7 @@ python3 RaspberryPi/Runtime/deployment/verify_bundle.py
 
 저장소 구성요소별 경로·역할·분류는 [`COMPONENT_SOURCES.json`](COMPONENT_SOURCES.json) 참고.
 
+---
 ## 제작자
 
 - 팀장 : 경희대학교 전자공학과 김진수
