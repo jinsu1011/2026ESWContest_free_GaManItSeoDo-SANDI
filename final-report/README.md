@@ -6,14 +6,13 @@
 | 파일 | 설명 |
 |---|---|
 | `2026ESWContest_자유공모_가만있어도SANDI_개발완료보고서.pdf` | 제출용 PDF (표지 1 + 본문 20 = 21페이지) |
-| `2026ESWContest_자유공모_가만있어도SANDI_개발완료보고서.pptx` | 위 PDF의 원본 슬라이드 |
 | `assets/` | 보고서에 사용한 하드웨어·UI·3D 하우징 사진 및 렌더 |
 
 `assets/` 주요 항목
 
 | 파일 | 내용 |
 |---|---|
-| `hw_product_full.jpg`, `hw_product_full_crop.jpg` | 통합 완제품 외형 |
+| `hw_product_final.jpg`, `hw_product_full_crop.jpg` | 통합 완제품 외형 |
 | `hw_product_full_emergency.jpg`, `hw_product_emergency_crop.jpg` | 긴급 상태 표시 |
 | `hw_node_final.png` | 센서 노드 배선도 |
 | `hw_esp32_wiring.jpg`, `hw_bench.jpg` | ESP32 실물 배선과 벤치 |
